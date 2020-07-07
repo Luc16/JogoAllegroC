@@ -1,0 +1,830 @@
+The system is: Darwin - 17.7.0 - x86_64
+Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+Compiler: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc 
+Build flags: 
+Id flags:  
+
+The output was:
+0
+
+
+Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "a.out"
+
+The C compiler identification is AppleClang, found in "/Users/mariana/Desktop/allegro/build/CMakeFiles/3.17.2/CompilerIdC/a.out"
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+Compiler: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ 
+Build flags: 
+Id flags:  
+
+The output was:
+0
+
+
+Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "a.out"
+
+The CXX compiler identification is AppleClang, found in "/Users/mariana/Desktop/allegro/build/CMakeFiles/3.17.2/CompilerIdCXX/a.out"
+
+Determining if the C compiler works passed with the following output:
+Change Dir: /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_f0709/fast && /Applications/Xcode.app/Contents/Developer/usr/bin/make  -f CMakeFiles/cmTC_f0709.dir/build.make CMakeFiles/cmTC_f0709.dir/build
+Building C object CMakeFiles/cmTC_f0709.dir/testCCompiler.c.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc    -o CMakeFiles/cmTC_f0709.dir/testCCompiler.c.o   -c /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp/testCCompiler.c
+Linking C executable cmTC_f0709
+/usr/local/Cellar/cmake/3.17.2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_f0709.dir/link.txt --verbose=1
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc   -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_f0709.dir/testCCompiler.c.o  -o cmTC_f0709 
+
+
+
+Detecting C compiler ABI info compiled with the following output:
+Change Dir: /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_e7f68/fast && /Applications/Xcode.app/Contents/Developer/usr/bin/make  -f CMakeFiles/cmTC_e7f68.dir/build.make CMakeFiles/cmTC_e7f68.dir/build
+Building C object CMakeFiles/cmTC_e7f68.dir/CMakeCCompilerABI.c.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc   -v -Wl,-v -o CMakeFiles/cmTC_e7f68.dir/CMakeCCompilerABI.c.o   -c /usr/local/Cellar/cmake/3.17.2/share/cmake/Modules/CMakeCCompilerABI.c
+Apple LLVM version 9.1.0 (clang-902.0.39.2)
+Target: x86_64-apple-darwin17.7.0
+Thread model: posix
+InstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin
+clang: warning: -Wl,-v: 'linker' input unused [-Wunused-command-line-argument]
+ "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang" -cc1 -triple x86_64-apple-macosx10.13.0 -Wdeprecated-objc-isa-usage -Werror=deprecated-objc-isa-usage -emit-obj -mrelax-all -disable-free -disable-llvm-verifier -discard-value-names -main-file-name CMakeCCompilerABI.c -mrelocation-model pic -pic-level 2 -mthread-model posix -mdisable-fp-elim -fno-strict-return -masm-verbose -munwind-tables -target-cpu penryn -target-linker-version 351.8 -v -dwarf-column-info -debugger-tuning=lldb -coverage-notes-file /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp/CMakeFiles/cmTC_e7f68.dir/CMakeCCompilerABI.c.gcno -resource-dir /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.1.0 -fdebug-compilation-dir /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp -ferror-limit 19 -fmessage-length 0 -stack-protector 1 -fblocks -fobjc-runtime=macosx-10.13.0 -fencode-extended-block-signature -fmax-type-align=16 -fdiagnostics-show-option -o CMakeFiles/cmTC_e7f68.dir/CMakeCCompilerABI.c.o -x c /usr/local/Cellar/cmake/3.17.2/share/cmake/Modules/CMakeCCompilerABI.c
+clang -cc1 version 9.1.0 (clang-902.0.39.2) default target x86_64-apple-darwin17.7.0
+#include "..." search starts here:
+#include <...> search starts here:
+ /usr/local/include
+ /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.1.0/include
+ /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include
+ /usr/include
+ /System/Library/Frameworks (framework directory)
+ /Library/Frameworks (framework directory)
+End of search list.
+Linking C executable cmTC_e7f68
+/usr/local/Cellar/cmake/3.17.2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e7f68.dir/link.txt --verbose=1
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc   -Wl,-search_paths_first -Wl,-headerpad_max_install_names  -v -Wl,-v CMakeFiles/cmTC_e7f68.dir/CMakeCCompilerABI.c.o  -o cmTC_e7f68 
+Apple LLVM version 9.1.0 (clang-902.0.39.2)
+Target: x86_64-apple-darwin17.7.0
+Thread model: posix
+InstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin
+ "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld" -demangle -lto_library /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libLTO.dylib -dynamic -arch x86_64 -macosx_version_min 10.13.0 -o cmTC_e7f68 -search_paths_first -headerpad_max_install_names -v CMakeFiles/cmTC_e7f68.dir/CMakeCCompilerABI.c.o -lSystem /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.1.0/lib/darwin/libclang_rt.osx.a
+@(#)PROGRAM:ld  PROJECT:ld64-351.8
+configured to support archs: armv6 armv7 armv7s arm64 i386 x86_64 x86_64h armv6m armv7k armv7m armv7em (tvOS)
+Library search paths:
+	/usr/lib
+	/usr/local/lib
+Framework search paths:
+	/Library/Frameworks/
+	/System/Library/Frameworks/
+
+
+
+Parsed C implicit include dir info from above output: rv=done
+  found start of include info
+  found start of implicit include info
+    add: [/usr/local/include]
+    add: [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.1.0/include]
+    add: [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include]
+    add: [/usr/include]
+  end of search list found
+  collapse include dir [/usr/local/include] ==> [/usr/local/include]
+  collapse include dir [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.1.0/include] ==> [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.1.0/include]
+  collapse include dir [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include] ==> [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include]
+  collapse include dir [/usr/include] ==> [/usr/include]
+  implicit include dirs: [/usr/local/include;/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.1.0/include;/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include;/usr/include]
+
+
+Parsed C implicit link information from above output:
+  link line regex: [^( *|.*[/\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command(s):/usr/bin/make cmTC_e7f68/fast && /Applications/Xcode.app/Contents/Developer/usr/bin/make  -f CMakeFiles/cmTC_e7f68.dir/build.make CMakeFiles/cmTC_e7f68.dir/build]
+  ignore line: [Building C object CMakeFiles/cmTC_e7f68.dir/CMakeCCompilerABI.c.o]
+  ignore line: [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc   -v -Wl -v -o CMakeFiles/cmTC_e7f68.dir/CMakeCCompilerABI.c.o   -c /usr/local/Cellar/cmake/3.17.2/share/cmake/Modules/CMakeCCompilerABI.c]
+  ignore line: [Apple LLVM version 9.1.0 (clang-902.0.39.2)]
+  ignore line: [Target: x86_64-apple-darwin17.7.0]
+  ignore line: [Thread model: posix]
+  ignore line: [InstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin]
+  ignore line: [clang: warning: -Wl -v: 'linker' input unused [-Wunused-command-line-argument]]
+  ignore line: [ "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang" -cc1 -triple x86_64-apple-macosx10.13.0 -Wdeprecated-objc-isa-usage -Werror=deprecated-objc-isa-usage -emit-obj -mrelax-all -disable-free -disable-llvm-verifier -discard-value-names -main-file-name CMakeCCompilerABI.c -mrelocation-model pic -pic-level 2 -mthread-model posix -mdisable-fp-elim -fno-strict-return -masm-verbose -munwind-tables -target-cpu penryn -target-linker-version 351.8 -v -dwarf-column-info -debugger-tuning=lldb -coverage-notes-file /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp/CMakeFiles/cmTC_e7f68.dir/CMakeCCompilerABI.c.gcno -resource-dir /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.1.0 -fdebug-compilation-dir /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp -ferror-limit 19 -fmessage-length 0 -stack-protector 1 -fblocks -fobjc-runtime=macosx-10.13.0 -fencode-extended-block-signature -fmax-type-align=16 -fdiagnostics-show-option -o CMakeFiles/cmTC_e7f68.dir/CMakeCCompilerABI.c.o -x c /usr/local/Cellar/cmake/3.17.2/share/cmake/Modules/CMakeCCompilerABI.c]
+  ignore line: [clang -cc1 version 9.1.0 (clang-902.0.39.2) default target x86_64-apple-darwin17.7.0]
+  ignore line: [#include "..." search starts here:]
+  ignore line: [#include <...> search starts here:]
+  ignore line: [ /usr/local/include]
+  ignore line: [ /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.1.0/include]
+  ignore line: [ /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include]
+  ignore line: [ /usr/include]
+  ignore line: [ /System/Library/Frameworks (framework directory)]
+  ignore line: [ /Library/Frameworks (framework directory)]
+  ignore line: [End of search list.]
+  ignore line: [Linking C executable cmTC_e7f68]
+  ignore line: [/usr/local/Cellar/cmake/3.17.2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e7f68.dir/link.txt --verbose=1]
+  ignore line: [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc   -Wl -search_paths_first -Wl -headerpad_max_install_names  -v -Wl -v CMakeFiles/cmTC_e7f68.dir/CMakeCCompilerABI.c.o  -o cmTC_e7f68 ]
+  ignore line: [Apple LLVM version 9.1.0 (clang-902.0.39.2)]
+  ignore line: [Target: x86_64-apple-darwin17.7.0]
+  ignore line: [Thread model: posix]
+  ignore line: [InstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin]
+  link line: [ "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld" -demangle -lto_library /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libLTO.dylib -dynamic -arch x86_64 -macosx_version_min 10.13.0 -o cmTC_e7f68 -search_paths_first -headerpad_max_install_names -v CMakeFiles/cmTC_e7f68.dir/CMakeCCompilerABI.c.o -lSystem /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.1.0/lib/darwin/libclang_rt.osx.a]
+    arg [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld] ==> ignore
+    arg [-demangle] ==> ignore
+    arg [-lto_library] ==> ignore, skip following value
+    arg [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libLTO.dylib] ==> skip value of -lto_library
+    arg [-dynamic] ==> ignore
+    arg [-arch] ==> ignore
+    arg [x86_64] ==> ignore
+    arg [-macosx_version_min] ==> ignore
+    arg [10.13.0] ==> ignore
+    arg [-o] ==> ignore
+    arg [cmTC_e7f68] ==> ignore
+    arg [-search_paths_first] ==> ignore
+    arg [-headerpad_max_install_names] ==> ignore
+    arg [-v] ==> ignore
+    arg [CMakeFiles/cmTC_e7f68.dir/CMakeCCompilerABI.c.o] ==> ignore
+    arg [-lSystem] ==> lib [System]
+    arg [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.1.0/lib/darwin/libclang_rt.osx.a] ==> lib [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.1.0/lib/darwin/libclang_rt.osx.a]
+  Library search paths: [;/usr/lib;/usr/local/lib]
+  Framework search paths: [;/Library/Frameworks/;/System/Library/Frameworks/]
+  remove lib [System]
+  remove lib [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.1.0/lib/darwin/libclang_rt.osx.a]
+  collapse library dir [/usr/lib] ==> [/usr/lib]
+  collapse library dir [/usr/local/lib] ==> [/usr/local/lib]
+  collapse framework dir [/Library/Frameworks/] ==> [/Library/Frameworks]
+  collapse framework dir [/System/Library/Frameworks/] ==> [/System/Library/Frameworks]
+  implicit libs: []
+  implicit dirs: [/usr/lib;/usr/local/lib]
+  implicit fwks: [/Library/Frameworks;/System/Library/Frameworks]
+
+
+Determining if the CXX compiler works passed with the following output:
+Change Dir: /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_6b378/fast && /Applications/Xcode.app/Contents/Developer/usr/bin/make  -f CMakeFiles/cmTC_6b378.dir/build.make CMakeFiles/cmTC_6b378.dir/build
+Building CXX object CMakeFiles/cmTC_6b378.dir/testCXXCompiler.cxx.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++     -o CMakeFiles/cmTC_6b378.dir/testCXXCompiler.cxx.o -c /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp/testCXXCompiler.cxx
+Linking CXX executable cmTC_6b378
+/usr/local/Cellar/cmake/3.17.2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_6b378.dir/link.txt --verbose=1
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++    -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_6b378.dir/testCXXCompiler.cxx.o  -o cmTC_6b378 
+
+
+
+Detecting CXX compiler ABI info compiled with the following output:
+Change Dir: /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_3eb3c/fast && /Applications/Xcode.app/Contents/Developer/usr/bin/make  -f CMakeFiles/cmTC_3eb3c.dir/build.make CMakeFiles/cmTC_3eb3c.dir/build
+Building CXX object CMakeFiles/cmTC_3eb3c.dir/CMakeCXXCompilerABI.cpp.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++    -v -Wl,-v -o CMakeFiles/cmTC_3eb3c.dir/CMakeCXXCompilerABI.cpp.o -c /usr/local/Cellar/cmake/3.17.2/share/cmake/Modules/CMakeCXXCompilerABI.cpp
+Apple LLVM version 9.1.0 (clang-902.0.39.2)
+Target: x86_64-apple-darwin17.7.0
+Thread model: posix
+InstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin
+clang: warning: -Wl,-v: 'linker' input unused [-Wunused-command-line-argument]
+ "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang" -cc1 -triple x86_64-apple-macosx10.13.0 -Wdeprecated-objc-isa-usage -Werror=deprecated-objc-isa-usage -emit-obj -mrelax-all -disable-free -disable-llvm-verifier -discard-value-names -main-file-name CMakeCXXCompilerABI.cpp -mrelocation-model pic -pic-level 2 -mthread-model posix -mdisable-fp-elim -fno-strict-return -masm-verbose -munwind-tables -target-cpu penryn -target-linker-version 351.8 -v -dwarf-column-info -debugger-tuning=lldb -coverage-notes-file /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp/CMakeFiles/cmTC_3eb3c.dir/CMakeCXXCompilerABI.cpp.gcno -resource-dir /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.1.0 -stdlib=libc++ -fdeprecated-macro -fdebug-compilation-dir /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp -ferror-limit 19 -fmessage-length 0 -stack-protector 1 -fblocks -fobjc-runtime=macosx-10.13.0 -fencode-extended-block-signature -fcxx-exceptions -fexceptions -fmax-type-align=16 -fdiagnostics-show-option -o CMakeFiles/cmTC_3eb3c.dir/CMakeCXXCompilerABI.cpp.o -x c++ /usr/local/Cellar/cmake/3.17.2/share/cmake/Modules/CMakeCXXCompilerABI.cpp
+clang -cc1 version 9.1.0 (clang-902.0.39.2) default target x86_64-apple-darwin17.7.0
+ignoring nonexistent directory "/usr/include/c++/v1"
+#include "..." search starts here:
+#include <...> search starts here:
+ /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1
+ /usr/local/include
+ /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.1.0/include
+ /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include
+ /usr/include
+ /System/Library/Frameworks (framework directory)
+ /Library/Frameworks (framework directory)
+End of search list.
+Linking CXX executable cmTC_3eb3c
+/usr/local/Cellar/cmake/3.17.2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_3eb3c.dir/link.txt --verbose=1
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++    -Wl,-search_paths_first -Wl,-headerpad_max_install_names  -v -Wl,-v CMakeFiles/cmTC_3eb3c.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_3eb3c 
+Apple LLVM version 9.1.0 (clang-902.0.39.2)
+Target: x86_64-apple-darwin17.7.0
+Thread model: posix
+InstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin
+ "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld" -demangle -lto_library /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libLTO.dylib -dynamic -arch x86_64 -macosx_version_min 10.13.0 -o cmTC_3eb3c -search_paths_first -headerpad_max_install_names -v CMakeFiles/cmTC_3eb3c.dir/CMakeCXXCompilerABI.cpp.o -lc++ -lSystem /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.1.0/lib/darwin/libclang_rt.osx.a
+@(#)PROGRAM:ld  PROJECT:ld64-351.8
+configured to support archs: armv6 armv7 armv7s arm64 i386 x86_64 x86_64h armv6m armv7k armv7m armv7em (tvOS)
+Library search paths:
+	/usr/lib
+	/usr/local/lib
+Framework search paths:
+	/Library/Frameworks/
+	/System/Library/Frameworks/
+
+
+
+Parsed CXX implicit include dir info from above output: rv=done
+  found start of include info
+  found start of implicit include info
+    add: [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1]
+    add: [/usr/local/include]
+    add: [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.1.0/include]
+    add: [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include]
+    add: [/usr/include]
+  end of search list found
+  collapse include dir [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1] ==> [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1]
+  collapse include dir [/usr/local/include] ==> [/usr/local/include]
+  collapse include dir [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.1.0/include] ==> [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.1.0/include]
+  collapse include dir [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include] ==> [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include]
+  collapse include dir [/usr/include] ==> [/usr/include]
+  implicit include dirs: [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1;/usr/local/include;/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.1.0/include;/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include;/usr/include]
+
+
+Parsed CXX implicit link information from above output:
+  link line regex: [^( *|.*[/\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command(s):/usr/bin/make cmTC_3eb3c/fast && /Applications/Xcode.app/Contents/Developer/usr/bin/make  -f CMakeFiles/cmTC_3eb3c.dir/build.make CMakeFiles/cmTC_3eb3c.dir/build]
+  ignore line: [Building CXX object CMakeFiles/cmTC_3eb3c.dir/CMakeCXXCompilerABI.cpp.o]
+  ignore line: [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++    -v -Wl -v -o CMakeFiles/cmTC_3eb3c.dir/CMakeCXXCompilerABI.cpp.o -c /usr/local/Cellar/cmake/3.17.2/share/cmake/Modules/CMakeCXXCompilerABI.cpp]
+  ignore line: [Apple LLVM version 9.1.0 (clang-902.0.39.2)]
+  ignore line: [Target: x86_64-apple-darwin17.7.0]
+  ignore line: [Thread model: posix]
+  ignore line: [InstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin]
+  ignore line: [clang: warning: -Wl -v: 'linker' input unused [-Wunused-command-line-argument]]
+  ignore line: [ "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang" -cc1 -triple x86_64-apple-macosx10.13.0 -Wdeprecated-objc-isa-usage -Werror=deprecated-objc-isa-usage -emit-obj -mrelax-all -disable-free -disable-llvm-verifier -discard-value-names -main-file-name CMakeCXXCompilerABI.cpp -mrelocation-model pic -pic-level 2 -mthread-model posix -mdisable-fp-elim -fno-strict-return -masm-verbose -munwind-tables -target-cpu penryn -target-linker-version 351.8 -v -dwarf-column-info -debugger-tuning=lldb -coverage-notes-file /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp/CMakeFiles/cmTC_3eb3c.dir/CMakeCXXCompilerABI.cpp.gcno -resource-dir /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.1.0 -stdlib=libc++ -fdeprecated-macro -fdebug-compilation-dir /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp -ferror-limit 19 -fmessage-length 0 -stack-protector 1 -fblocks -fobjc-runtime=macosx-10.13.0 -fencode-extended-block-signature -fcxx-exceptions -fexceptions -fmax-type-align=16 -fdiagnostics-show-option -o CMakeFiles/cmTC_3eb3c.dir/CMakeCXXCompilerABI.cpp.o -x c++ /usr/local/Cellar/cmake/3.17.2/share/cmake/Modules/CMakeCXXCompilerABI.cpp]
+  ignore line: [clang -cc1 version 9.1.0 (clang-902.0.39.2) default target x86_64-apple-darwin17.7.0]
+  ignore line: [ignoring nonexistent directory "/usr/include/c++/v1"]
+  ignore line: [#include "..." search starts here:]
+  ignore line: [#include <...> search starts here:]
+  ignore line: [ /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1]
+  ignore line: [ /usr/local/include]
+  ignore line: [ /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.1.0/include]
+  ignore line: [ /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include]
+  ignore line: [ /usr/include]
+  ignore line: [ /System/Library/Frameworks (framework directory)]
+  ignore line: [ /Library/Frameworks (framework directory)]
+  ignore line: [End of search list.]
+  ignore line: [Linking CXX executable cmTC_3eb3c]
+  ignore line: [/usr/local/Cellar/cmake/3.17.2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_3eb3c.dir/link.txt --verbose=1]
+  ignore line: [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++    -Wl -search_paths_first -Wl -headerpad_max_install_names  -v -Wl -v CMakeFiles/cmTC_3eb3c.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_3eb3c ]
+  ignore line: [Apple LLVM version 9.1.0 (clang-902.0.39.2)]
+  ignore line: [Target: x86_64-apple-darwin17.7.0]
+  ignore line: [Thread model: posix]
+  ignore line: [InstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin]
+  link line: [ "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld" -demangle -lto_library /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libLTO.dylib -dynamic -arch x86_64 -macosx_version_min 10.13.0 -o cmTC_3eb3c -search_paths_first -headerpad_max_install_names -v CMakeFiles/cmTC_3eb3c.dir/CMakeCXXCompilerABI.cpp.o -lc++ -lSystem /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.1.0/lib/darwin/libclang_rt.osx.a]
+    arg [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld] ==> ignore
+    arg [-demangle] ==> ignore
+    arg [-lto_library] ==> ignore, skip following value
+    arg [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libLTO.dylib] ==> skip value of -lto_library
+    arg [-dynamic] ==> ignore
+    arg [-arch] ==> ignore
+    arg [x86_64] ==> ignore
+    arg [-macosx_version_min] ==> ignore
+    arg [10.13.0] ==> ignore
+    arg [-o] ==> ignore
+    arg [cmTC_3eb3c] ==> ignore
+    arg [-search_paths_first] ==> ignore
+    arg [-headerpad_max_install_names] ==> ignore
+    arg [-v] ==> ignore
+    arg [CMakeFiles/cmTC_3eb3c.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
+    arg [-lc++] ==> lib [c++]
+    arg [-lSystem] ==> lib [System]
+    arg [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.1.0/lib/darwin/libclang_rt.osx.a] ==> lib [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.1.0/lib/darwin/libclang_rt.osx.a]
+  Library search paths: [;/usr/lib;/usr/local/lib]
+  Framework search paths: [;/Library/Frameworks/;/System/Library/Frameworks/]
+  remove lib [System]
+  remove lib [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.1.0/lib/darwin/libclang_rt.osx.a]
+  collapse library dir [/usr/lib] ==> [/usr/lib]
+  collapse library dir [/usr/local/lib] ==> [/usr/local/lib]
+  collapse framework dir [/Library/Frameworks/] ==> [/Library/Frameworks]
+  collapse framework dir [/System/Library/Frameworks/] ==> [/System/Library/Frameworks]
+  implicit libs: [c++]
+  implicit dirs: [/usr/lib;/usr/local/lib]
+  implicit fwks: [/Library/Frameworks;/System/Library/Frameworks]
+
+
+Determining if the include file sys/types.h exists passed with the following output:
+Change Dir: /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_7a2c9/fast && /Applications/Xcode.app/Contents/Developer/usr/bin/make  -f CMakeFiles/cmTC_7a2c9.dir/build.make CMakeFiles/cmTC_7a2c9.dir/build
+Building C object CMakeFiles/cmTC_7a2c9.dir/CheckIncludeFile.c.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc   -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes    -o CMakeFiles/cmTC_7a2c9.dir/CheckIncludeFile.c.o   -c /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_7a2c9
+/usr/local/Cellar/cmake/3.17.2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_7a2c9.dir/link.txt --verbose=1
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc  -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes  -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_7a2c9.dir/CheckIncludeFile.c.o  -o cmTC_7a2c9 
+
+
+
+Determining if the include file stdint.h exists passed with the following output:
+Change Dir: /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_e260e/fast && /Applications/Xcode.app/Contents/Developer/usr/bin/make  -f CMakeFiles/cmTC_e260e.dir/build.make CMakeFiles/cmTC_e260e.dir/build
+Building C object CMakeFiles/cmTC_e260e.dir/CheckIncludeFile.c.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc   -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes    -o CMakeFiles/cmTC_e260e.dir/CheckIncludeFile.c.o   -c /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_e260e
+/usr/local/Cellar/cmake/3.17.2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e260e.dir/link.txt --verbose=1
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc  -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes  -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_e260e.dir/CheckIncludeFile.c.o  -o cmTC_e260e 
+
+
+
+Determining if the include file stddef.h exists passed with the following output:
+Change Dir: /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_0b07e/fast && /Applications/Xcode.app/Contents/Developer/usr/bin/make  -f CMakeFiles/cmTC_0b07e.dir/build.make CMakeFiles/cmTC_0b07e.dir/build
+Building C object CMakeFiles/cmTC_0b07e.dir/CheckIncludeFile.c.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc   -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes    -o CMakeFiles/cmTC_0b07e.dir/CheckIncludeFile.c.o   -c /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_0b07e
+/usr/local/Cellar/cmake/3.17.2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_0b07e.dir/link.txt --verbose=1
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc  -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes  -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_0b07e.dir/CheckIncludeFile.c.o  -o cmTC_0b07e 
+
+
+
+Determining size of unsigned short passed with the following output:
+Change Dir: /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_8392e/fast && /Applications/Xcode.app/Contents/Developer/usr/bin/make  -f CMakeFiles/cmTC_8392e.dir/build.make CMakeFiles/cmTC_8392e.dir/build
+Building C object CMakeFiles/cmTC_8392e.dir/CMAKE_SIZEOF_UNSIGNED_SHORT.c.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc   -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes    -o CMakeFiles/cmTC_8392e.dir/CMAKE_SIZEOF_UNSIGNED_SHORT.c.o   -c /Users/mariana/Desktop/allegro/build/CMakeFiles/CheckTypeSize/CMAKE_SIZEOF_UNSIGNED_SHORT.c
+Linking C executable cmTC_8392e
+/usr/local/Cellar/cmake/3.17.2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_8392e.dir/link.txt --verbose=1
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc  -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes  -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_8392e.dir/CMAKE_SIZEOF_UNSIGNED_SHORT.c.o  -o cmTC_8392e 
+
+
+
+Determining if the system is big endian passed with the following output:
+Change Dir: /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_07e29/fast && /Applications/Xcode.app/Contents/Developer/usr/bin/make  -f CMakeFiles/cmTC_07e29.dir/build.make CMakeFiles/cmTC_07e29.dir/build
+Building C object CMakeFiles/cmTC_07e29.dir/TestEndianess.c.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc   -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes    -o CMakeFiles/cmTC_07e29.dir/TestEndianess.c.o   -c /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp/TestEndianess.c
+Linking C executable cmTC_07e29
+/usr/local/Cellar/cmake/3.17.2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_07e29.dir/link.txt --verbose=1
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc  -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes  -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_07e29.dir/TestEndianess.c.o  -o cmTC_07e29 
+
+
+TestEndianess.c:
+/* A 16 bit integer is required. */
+typedef unsigned short cmakeint16;
+
+/* On a little endian machine, these 16bit ints will give "THIS IS LITTLE ENDIAN."
+   On a big endian machine the characters will be exchanged pairwise. */
+const cmakeint16 info_little[] =  {0x4854, 0x5349, 0x4920, 0x2053, 0x494c, 0x5454, 0x454c, 0x4520, 0x444e, 0x4149, 0x2e4e, 0x0000};
+
+/* on a big endian machine, these 16bit ints will give "THIS IS BIG ENDIAN."
+   On a little endian machine the characters will be exchanged pairwise. */
+const cmakeint16 info_big[] =     {0x5448, 0x4953, 0x2049, 0x5320, 0x4249, 0x4720, 0x454e, 0x4449, 0x414e, 0x2e2e, 0x0000};
+
+#ifdef __CLASSIC_C__
+int main(argc, argv) int argc; char *argv[];
+#else
+int main(int argc, char *argv[])
+#endif
+{
+  int require = 0;
+  require += info_little[argc];
+  require += info_big[argc];
+  (void)argv;
+  return require;
+}
+
+
+Determining if files dirent.h exist passed with the following output:
+Change Dir: /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_0ec7b/fast && /Applications/Xcode.app/Contents/Developer/usr/bin/make  -f CMakeFiles/cmTC_0ec7b.dir/build.make CMakeFiles/cmTC_0ec7b.dir/build
+Building C object CMakeFiles/cmTC_0ec7b.dir/ALLEGRO_HAVE_DIRENT_H.c.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc   -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes    -o CMakeFiles/cmTC_0ec7b.dir/ALLEGRO_HAVE_DIRENT_H.c.o   -c /Users/mariana/Desktop/allegro/build/CMakeFiles/CheckIncludeFiles/ALLEGRO_HAVE_DIRENT_H.c
+Linking C executable cmTC_0ec7b
+/usr/local/Cellar/cmake/3.17.2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_0ec7b.dir/link.txt --verbose=1
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc  -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes  -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_0ec7b.dir/ALLEGRO_HAVE_DIRENT_H.c.o  -o cmTC_0ec7b 
+
+
+
+Determining if files inttypes.h exist passed with the following output:
+Change Dir: /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_9daa1/fast && /Applications/Xcode.app/Contents/Developer/usr/bin/make  -f CMakeFiles/cmTC_9daa1.dir/build.make CMakeFiles/cmTC_9daa1.dir/build
+Building C object CMakeFiles/cmTC_9daa1.dir/ALLEGRO_HAVE_INTTYPES_H.c.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc   -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes    -o CMakeFiles/cmTC_9daa1.dir/ALLEGRO_HAVE_INTTYPES_H.c.o   -c /Users/mariana/Desktop/allegro/build/CMakeFiles/CheckIncludeFiles/ALLEGRO_HAVE_INTTYPES_H.c
+Linking C executable cmTC_9daa1
+/usr/local/Cellar/cmake/3.17.2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_9daa1.dir/link.txt --verbose=1
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc  -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes  -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_9daa1.dir/ALLEGRO_HAVE_INTTYPES_H.c.o  -o cmTC_9daa1 
+
+
+
+Determining if files stdbool.h exist passed with the following output:
+Change Dir: /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_579b5/fast && /Applications/Xcode.app/Contents/Developer/usr/bin/make  -f CMakeFiles/cmTC_579b5.dir/build.make CMakeFiles/cmTC_579b5.dir/build
+Building C object CMakeFiles/cmTC_579b5.dir/ALLEGRO_HAVE_STDBOOL_H.c.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc   -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes    -o CMakeFiles/cmTC_579b5.dir/ALLEGRO_HAVE_STDBOOL_H.c.o   -c /Users/mariana/Desktop/allegro/build/CMakeFiles/CheckIncludeFiles/ALLEGRO_HAVE_STDBOOL_H.c
+Linking C executable cmTC_579b5
+/usr/local/Cellar/cmake/3.17.2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_579b5.dir/link.txt --verbose=1
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc  -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes  -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_579b5.dir/ALLEGRO_HAVE_STDBOOL_H.c.o  -o cmTC_579b5 
+
+
+
+Determining if files stdint.h exist passed with the following output:
+Change Dir: /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_911ab/fast && /Applications/Xcode.app/Contents/Developer/usr/bin/make  -f CMakeFiles/cmTC_911ab.dir/build.make CMakeFiles/cmTC_911ab.dir/build
+Building C object CMakeFiles/cmTC_911ab.dir/ALLEGRO_HAVE_STDINT_H.c.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc   -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes    -o CMakeFiles/cmTC_911ab.dir/ALLEGRO_HAVE_STDINT_H.c.o   -c /Users/mariana/Desktop/allegro/build/CMakeFiles/CheckIncludeFiles/ALLEGRO_HAVE_STDINT_H.c
+Linking C executable cmTC_911ab
+/usr/local/Cellar/cmake/3.17.2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_911ab.dir/link.txt --verbose=1
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc  -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes  -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_911ab.dir/ALLEGRO_HAVE_STDINT_H.c.o  -o cmTC_911ab 
+
+
+
+Determining if files sys/stat.h exist passed with the following output:
+Change Dir: /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_9d700/fast && /Applications/Xcode.app/Contents/Developer/usr/bin/make  -f CMakeFiles/cmTC_9d700.dir/build.make CMakeFiles/cmTC_9d700.dir/build
+Building C object CMakeFiles/cmTC_9d700.dir/ALLEGRO_HAVE_SYS_STAT_H.c.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc   -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes    -o CMakeFiles/cmTC_9d700.dir/ALLEGRO_HAVE_SYS_STAT_H.c.o   -c /Users/mariana/Desktop/allegro/build/CMakeFiles/CheckIncludeFiles/ALLEGRO_HAVE_SYS_STAT_H.c
+Linking C executable cmTC_9d700
+/usr/local/Cellar/cmake/3.17.2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_9d700.dir/link.txt --verbose=1
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc  -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes  -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_9d700.dir/ALLEGRO_HAVE_SYS_STAT_H.c.o  -o cmTC_9d700 
+
+
+
+Determining if files sys/time.h exist passed with the following output:
+Change Dir: /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_2fa71/fast && /Applications/Xcode.app/Contents/Developer/usr/bin/make  -f CMakeFiles/cmTC_2fa71.dir/build.make CMakeFiles/cmTC_2fa71.dir/build
+Building C object CMakeFiles/cmTC_2fa71.dir/ALLEGRO_HAVE_SYS_TIME_H.c.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc   -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes    -o CMakeFiles/cmTC_2fa71.dir/ALLEGRO_HAVE_SYS_TIME_H.c.o   -c /Users/mariana/Desktop/allegro/build/CMakeFiles/CheckIncludeFiles/ALLEGRO_HAVE_SYS_TIME_H.c
+Linking C executable cmTC_2fa71
+/usr/local/Cellar/cmake/3.17.2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_2fa71.dir/link.txt --verbose=1
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc  -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes  -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_2fa71.dir/ALLEGRO_HAVE_SYS_TIME_H.c.o  -o cmTC_2fa71 
+
+
+
+Determining if files time.h exist passed with the following output:
+Change Dir: /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_e08d8/fast && /Applications/Xcode.app/Contents/Developer/usr/bin/make  -f CMakeFiles/cmTC_e08d8.dir/build.make CMakeFiles/cmTC_e08d8.dir/build
+Building C object CMakeFiles/cmTC_e08d8.dir/ALLEGRO_HAVE_TIME_H.c.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc   -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes    -o CMakeFiles/cmTC_e08d8.dir/ALLEGRO_HAVE_TIME_H.c.o   -c /Users/mariana/Desktop/allegro/build/CMakeFiles/CheckIncludeFiles/ALLEGRO_HAVE_TIME_H.c
+Linking C executable cmTC_e08d8
+/usr/local/Cellar/cmake/3.17.2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e08d8.dir/link.txt --verbose=1
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc  -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes  -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_e08d8.dir/ALLEGRO_HAVE_TIME_H.c.o  -o cmTC_e08d8 
+
+
+
+Determining if files sys/utsname.h exist passed with the following output:
+Change Dir: /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_db845/fast && /Applications/Xcode.app/Contents/Developer/usr/bin/make  -f CMakeFiles/cmTC_db845.dir/build.make CMakeFiles/cmTC_db845.dir/build
+Building C object CMakeFiles/cmTC_db845.dir/ALLEGRO_HAVE_SYS_UTSNAME_H.c.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc   -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes    -o CMakeFiles/cmTC_db845.dir/ALLEGRO_HAVE_SYS_UTSNAME_H.c.o   -c /Users/mariana/Desktop/allegro/build/CMakeFiles/CheckIncludeFiles/ALLEGRO_HAVE_SYS_UTSNAME_H.c
+Linking C executable cmTC_db845
+/usr/local/Cellar/cmake/3.17.2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_db845.dir/link.txt --verbose=1
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc  -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes  -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_db845.dir/ALLEGRO_HAVE_SYS_UTSNAME_H.c.o  -o cmTC_db845 
+
+
+
+Determining if files sys/types.h exist passed with the following output:
+Change Dir: /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_aced1/fast && /Applications/Xcode.app/Contents/Developer/usr/bin/make  -f CMakeFiles/cmTC_aced1.dir/build.make CMakeFiles/cmTC_aced1.dir/build
+Building C object CMakeFiles/cmTC_aced1.dir/ALLEGRO_HAVE_SYS_TYPES_H.c.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc   -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes    -o CMakeFiles/cmTC_aced1.dir/ALLEGRO_HAVE_SYS_TYPES_H.c.o   -c /Users/mariana/Desktop/allegro/build/CMakeFiles/CheckIncludeFiles/ALLEGRO_HAVE_SYS_TYPES_H.c
+Linking C executable cmTC_aced1
+/usr/local/Cellar/cmake/3.17.2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_aced1.dir/link.txt --verbose=1
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc  -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes  -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_aced1.dir/ALLEGRO_HAVE_SYS_TYPES_H.c.o  -o cmTC_aced1 
+
+
+
+Determining if files libkern/OSAtomic.h exist passed with the following output:
+Change Dir: /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_52e7f/fast && /Applications/Xcode.app/Contents/Developer/usr/bin/make  -f CMakeFiles/cmTC_52e7f.dir/build.make CMakeFiles/cmTC_52e7f.dir/build
+Building C object CMakeFiles/cmTC_52e7f.dir/ALLEGRO_HAVE_OSATOMIC_H.c.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc   -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes    -o CMakeFiles/cmTC_52e7f.dir/ALLEGRO_HAVE_OSATOMIC_H.c.o   -c /Users/mariana/Desktop/allegro/build/CMakeFiles/CheckIncludeFiles/ALLEGRO_HAVE_OSATOMIC_H.c
+Linking C executable cmTC_52e7f
+/usr/local/Cellar/cmake/3.17.2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_52e7f.dir/link.txt --verbose=1
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc  -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes  -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_52e7f.dir/ALLEGRO_HAVE_OSATOMIC_H.c.o  -o cmTC_52e7f 
+
+
+
+Determining if the function mkstemp exists passed with the following output:
+Change Dir: /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_f3871/fast && /Applications/Xcode.app/Contents/Developer/usr/bin/make  -f CMakeFiles/cmTC_f3871.dir/build.make CMakeFiles/cmTC_f3871.dir/build
+Building C object CMakeFiles/cmTC_f3871.dir/CheckFunctionExists.c.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc   -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes -DCHECK_FUNCTION_EXISTS=mkstemp   -o CMakeFiles/cmTC_f3871.dir/CheckFunctionExists.c.o   -c /usr/local/Cellar/cmake/3.17.2/share/cmake/Modules/CheckFunctionExists.c
+Linking C executable cmTC_f3871
+/usr/local/Cellar/cmake/3.17.2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_f3871.dir/link.txt --verbose=1
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc  -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes -DCHECK_FUNCTION_EXISTS=mkstemp -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_f3871.dir/CheckFunctionExists.c.o  -o cmTC_f3871 
+
+
+
+Determining if the function mmap exists passed with the following output:
+Change Dir: /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_dee65/fast && /Applications/Xcode.app/Contents/Developer/usr/bin/make  -f CMakeFiles/cmTC_dee65.dir/build.make CMakeFiles/cmTC_dee65.dir/build
+Building C object CMakeFiles/cmTC_dee65.dir/CheckFunctionExists.c.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc   -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes -DCHECK_FUNCTION_EXISTS=mmap   -o CMakeFiles/cmTC_dee65.dir/CheckFunctionExists.c.o   -c /usr/local/Cellar/cmake/3.17.2/share/cmake/Modules/CheckFunctionExists.c
+Linking C executable cmTC_dee65
+/usr/local/Cellar/cmake/3.17.2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_dee65.dir/link.txt --verbose=1
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc  -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes -DCHECK_FUNCTION_EXISTS=mmap -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_dee65.dir/CheckFunctionExists.c.o  -o cmTC_dee65 
+
+
+
+Determining if the function mprotect exists passed with the following output:
+Change Dir: /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_c8440/fast && /Applications/Xcode.app/Contents/Developer/usr/bin/make  -f CMakeFiles/cmTC_c8440.dir/build.make CMakeFiles/cmTC_c8440.dir/build
+Building C object CMakeFiles/cmTC_c8440.dir/CheckFunctionExists.c.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc   -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes -DCHECK_FUNCTION_EXISTS=mprotect   -o CMakeFiles/cmTC_c8440.dir/CheckFunctionExists.c.o   -c /usr/local/Cellar/cmake/3.17.2/share/cmake/Modules/CheckFunctionExists.c
+Linking C executable cmTC_c8440
+/usr/local/Cellar/cmake/3.17.2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_c8440.dir/link.txt --verbose=1
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc  -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes -DCHECK_FUNCTION_EXISTS=mprotect -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_c8440.dir/CheckFunctionExists.c.o  -o cmTC_c8440 
+
+
+
+Determining if the function sched_yield exists passed with the following output:
+Change Dir: /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_a87d1/fast && /Applications/Xcode.app/Contents/Developer/usr/bin/make  -f CMakeFiles/cmTC_a87d1.dir/build.make CMakeFiles/cmTC_a87d1.dir/build
+Building C object CMakeFiles/cmTC_a87d1.dir/CheckFunctionExists.c.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc   -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes -DCHECK_FUNCTION_EXISTS=sched_yield   -o CMakeFiles/cmTC_a87d1.dir/CheckFunctionExists.c.o   -c /usr/local/Cellar/cmake/3.17.2/share/cmake/Modules/CheckFunctionExists.c
+Linking C executable cmTC_a87d1
+/usr/local/Cellar/cmake/3.17.2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_a87d1.dir/link.txt --verbose=1
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc  -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes -DCHECK_FUNCTION_EXISTS=sched_yield -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_a87d1.dir/CheckFunctionExists.c.o  -o cmTC_a87d1 
+
+
+
+Determining if the function sysconf exists passed with the following output:
+Change Dir: /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_36b06/fast && /Applications/Xcode.app/Contents/Developer/usr/bin/make  -f CMakeFiles/cmTC_36b06.dir/build.make CMakeFiles/cmTC_36b06.dir/build
+Building C object CMakeFiles/cmTC_36b06.dir/CheckFunctionExists.c.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc   -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes -DCHECK_FUNCTION_EXISTS=sysconf   -o CMakeFiles/cmTC_36b06.dir/CheckFunctionExists.c.o   -c /usr/local/Cellar/cmake/3.17.2/share/cmake/Modules/CheckFunctionExists.c
+Linking C executable cmTC_36b06
+/usr/local/Cellar/cmake/3.17.2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_36b06.dir/link.txt --verbose=1
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc  -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes -DCHECK_FUNCTION_EXISTS=sysconf -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_36b06.dir/CheckFunctionExists.c.o  -o cmTC_36b06 
+
+
+
+Determining if the function fseeko exists passed with the following output:
+Change Dir: /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_5f707/fast && /Applications/Xcode.app/Contents/Developer/usr/bin/make  -f CMakeFiles/cmTC_5f707.dir/build.make CMakeFiles/cmTC_5f707.dir/build
+Building C object CMakeFiles/cmTC_5f707.dir/CheckFunctionExists.c.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc   -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes -DCHECK_FUNCTION_EXISTS=fseeko   -o CMakeFiles/cmTC_5f707.dir/CheckFunctionExists.c.o   -c /usr/local/Cellar/cmake/3.17.2/share/cmake/Modules/CheckFunctionExists.c
+Linking C executable cmTC_5f707
+/usr/local/Cellar/cmake/3.17.2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_5f707.dir/link.txt --verbose=1
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc  -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes -DCHECK_FUNCTION_EXISTS=fseeko -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_5f707.dir/CheckFunctionExists.c.o  -o cmTC_5f707 
+
+
+
+Determining if the function ftello exists passed with the following output:
+Change Dir: /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_96321/fast && /Applications/Xcode.app/Contents/Developer/usr/bin/make  -f CMakeFiles/cmTC_96321.dir/build.make CMakeFiles/cmTC_96321.dir/build
+Building C object CMakeFiles/cmTC_96321.dir/CheckFunctionExists.c.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc   -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes -DCHECK_FUNCTION_EXISTS=ftello   -o CMakeFiles/cmTC_96321.dir/CheckFunctionExists.c.o   -c /usr/local/Cellar/cmake/3.17.2/share/cmake/Modules/CheckFunctionExists.c
+Linking C executable cmTC_96321
+/usr/local/Cellar/cmake/3.17.2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_96321.dir/link.txt --verbose=1
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc  -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes -DCHECK_FUNCTION_EXISTS=ftello -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_96321.dir/CheckFunctionExists.c.o  -o cmTC_96321 
+
+
+
+Determining if the function strerror_r exists passed with the following output:
+Change Dir: /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_561e0/fast && /Applications/Xcode.app/Contents/Developer/usr/bin/make  -f CMakeFiles/cmTC_561e0.dir/build.make CMakeFiles/cmTC_561e0.dir/build
+Building C object CMakeFiles/cmTC_561e0.dir/CheckFunctionExists.c.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc   -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes -DCHECK_FUNCTION_EXISTS=strerror_r   -o CMakeFiles/cmTC_561e0.dir/CheckFunctionExists.c.o   -c /usr/local/Cellar/cmake/3.17.2/share/cmake/Modules/CheckFunctionExists.c
+Linking C executable cmTC_561e0
+/usr/local/Cellar/cmake/3.17.2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_561e0.dir/link.txt --verbose=1
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc  -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes -DCHECK_FUNCTION_EXISTS=strerror_r -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_561e0.dir/CheckFunctionExists.c.o  -o cmTC_561e0 
+
+
+
+Determining size of _Bool passed with the following output:
+Change Dir: /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_eee5d/fast && /Applications/Xcode.app/Contents/Developer/usr/bin/make  -f CMakeFiles/cmTC_eee5d.dir/build.make CMakeFiles/cmTC_eee5d.dir/build
+Building C object CMakeFiles/cmTC_eee5d.dir/ALLEGRO_HAVE__BOOL.c.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc   -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes    -o CMakeFiles/cmTC_eee5d.dir/ALLEGRO_HAVE__BOOL.c.o   -c /Users/mariana/Desktop/allegro/build/CMakeFiles/CheckTypeSize/ALLEGRO_HAVE__BOOL.c
+Linking C executable cmTC_eee5d
+/usr/local/Cellar/cmake/3.17.2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_eee5d.dir/link.txt --verbose=1
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc  -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes  -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_eee5d.dir/ALLEGRO_HAVE__BOOL.c.o  -o cmTC_eee5d 
+
+
+
+Performing C SOURCE FILE Test ALLEGRO_HAVE_VA_COPY succeeded with the following output:
+Change Dir: /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_5ea03/fast && /Applications/Xcode.app/Contents/Developer/usr/bin/make  -f CMakeFiles/cmTC_5ea03.dir/build.make CMakeFiles/cmTC_5ea03.dir/build
+Building C object CMakeFiles/cmTC_5ea03.dir/src.c.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc   -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes -DALLEGRO_HAVE_VA_COPY   -o CMakeFiles/cmTC_5ea03.dir/src.c.o   -c /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp/src.c
+Linking C executable cmTC_5ea03
+/usr/local/Cellar/cmake/3.17.2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_5ea03.dir/link.txt --verbose=1
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc  -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes -DALLEGRO_HAVE_VA_COPY -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_5ea03.dir/src.c.o  -o cmTC_5ea03 
+
+
+Source file was:
+
+    #include <stdarg.h>
+    int main(void) {
+        va_list a, b;
+        va_copy(a, b);
+        return 0;
+    }
+Determining if the include file pthread.h exists passed with the following output:
+Change Dir: /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_1d97b/fast && /Applications/Xcode.app/Contents/Developer/usr/bin/make  -f CMakeFiles/cmTC_1d97b.dir/build.make CMakeFiles/cmTC_1d97b.dir/build
+Building C object CMakeFiles/cmTC_1d97b.dir/CheckIncludeFile.c.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc   -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes    -o CMakeFiles/cmTC_1d97b.dir/CheckIncludeFile.c.o   -c /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_1d97b
+/usr/local/Cellar/cmake/3.17.2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_1d97b.dir/link.txt --verbose=1
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc  -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes  -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_1d97b.dir/CheckIncludeFile.c.o  -o cmTC_1d97b 
+
+
+
+Performing C SOURCE FILE Test CMAKE_HAVE_LIBC_PTHREAD succeeded with the following output:
+Change Dir: /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_f5595/fast && /Applications/Xcode.app/Contents/Developer/usr/bin/make  -f CMakeFiles/cmTC_f5595.dir/build.make CMakeFiles/cmTC_f5595.dir/build
+Building C object CMakeFiles/cmTC_f5595.dir/src.c.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc   -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes -DCMAKE_HAVE_LIBC_PTHREAD   -o CMakeFiles/cmTC_f5595.dir/src.c.o   -c /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp/src.c
+Linking C executable cmTC_f5595
+/usr/local/Cellar/cmake/3.17.2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_f5595.dir/link.txt --verbose=1
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc  -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes -DCMAKE_HAVE_LIBC_PTHREAD -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_f5595.dir/src.c.o  -o cmTC_f5595 
+
+
+Source file was:
+#include <pthread.h>
+
+void* test_func(void* data)
+{
+  return data;
+}
+
+int main(void)
+{
+  pthread_t thread;
+  pthread_create(&thread, NULL, test_func, NULL);
+  pthread_detach(thread);
+  pthread_cancel(thread);
+  pthread_join(thread, NULL);
+  pthread_atfork(NULL, NULL, NULL);
+  pthread_exit(NULL);
+
+  return 0;
+}
+
+Performing C SOURCE FILE Test FLAC_COMPILES succeeded with the following output:
+Change Dir: /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_4220d/fast && /Applications/Xcode.app/Contents/Developer/usr/bin/make  -f CMakeFiles/cmTC_4220d.dir/build.make CMakeFiles/cmTC_4220d.dir/build
+Building C object CMakeFiles/cmTC_4220d.dir/src.c.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc   -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes -DFLAC_COMPILES   -o CMakeFiles/cmTC_4220d.dir/src.c.o   -c /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp/src.c
+Linking C executable cmTC_4220d
+/usr/local/Cellar/cmake/3.17.2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_4220d.dir/link.txt --verbose=1
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc  -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes -DFLAC_COMPILES -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_4220d.dir/src.c.o  -o cmTC_4220d  /usr/local/lib/libFLAC.dylib /usr/local/lib/libogg.dylib -lm 
+
+
+Source file was:
+
+            #include <FLAC/stream_decoder.h>
+            int main(void)
+            {
+                (void)FLAC__stream_decoder_new();
+                return 0;
+            }
+Performing C SOURCE FILE Test DUMB_COMPILES succeeded with the following output:
+Change Dir: /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_46ac2/fast && /Applications/Xcode.app/Contents/Developer/usr/bin/make  -f CMakeFiles/cmTC_46ac2.dir/build.make CMakeFiles/cmTC_46ac2.dir/build
+Building C object CMakeFiles/cmTC_46ac2.dir/src.c.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc   -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes -DDUMB_COMPILES   -o CMakeFiles/cmTC_46ac2.dir/src.c.o   -c /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp/src.c
+Linking C executable cmTC_46ac2
+/usr/local/Cellar/cmake/3.17.2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_46ac2.dir/link.txt --verbose=1
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc  -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes -DDUMB_COMPILES -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_46ac2.dir/src.c.o  -o cmTC_46ac2  /usr/local/lib/libdumb.a -lm 
+
+
+Source file was:
+
+            #define _FILE_OFFSET_BITS 64
+            #include <dumb.h>
+            #if (DUMB_MAJOR_VERSION) == 1
+                #error libdumb 1.0 not supported, get >= 2.0 or 0.9.3
+            #endif
+            int main(void)
+            {
+                dumb_register_stdfiles();
+                return 0;
+            }
+Performing C SOURCE FILE Test VORBIS_COMPILES succeeded with the following output:
+Change Dir: /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_c0184/fast && /Applications/Xcode.app/Contents/Developer/usr/bin/make  -f CMakeFiles/cmTC_c0184.dir/build.make CMakeFiles/cmTC_c0184.dir/build
+Building C object CMakeFiles/cmTC_c0184.dir/src.c.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc   -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes -DVORBIS_COMPILES   -o CMakeFiles/cmTC_c0184.dir/src.c.o   -c /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp/src.c
+Linking C executable cmTC_c0184
+/usr/local/Cellar/cmake/3.17.2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_c0184.dir/link.txt --verbose=1
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc  -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes -DVORBIS_COMPILES -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_c0184.dir/src.c.o  -o cmTC_c0184  /usr/local/lib/libvorbisfile.dylib /usr/local/lib/libvorbis.dylib /usr/local/lib/libogg.dylib -lm 
+
+
+Source file was:
+
+            #include <vorbis/vorbisfile.h>
+            int main(void)
+            {
+                OggVorbis_File f;
+                ov_callbacks callback;
+                vorbis_info *v = 0;
+                (void)v;
+                ov_info(&f, -1);
+                callback = OV_CALLBACKS_NOCLOSE;
+                return 0;
+            }
+Performing C SOURCE FILE Test OPUS_COMPILES succeeded with the following output:
+Change Dir: /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_58412/fast && /Applications/Xcode.app/Contents/Developer/usr/bin/make  -f CMakeFiles/cmTC_58412.dir/build.make CMakeFiles/cmTC_58412.dir/build
+Building C object CMakeFiles/cmTC_58412.dir/src.c.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc  -I/usr/local/include/opus  -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes -DOPUS_COMPILES   -o CMakeFiles/cmTC_58412.dir/src.c.o   -c /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp/src.c
+/Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp/src.c:8:25: warning: variable 'f' is uninitialized when used here [-Wuninitialized]
+                op_free(f);
+                        ^
+/Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp/src.c:5:31: note: initialize the variable 'f' to silence this warning
+                OggOpusFile *f;
+                              ^
+                               = NULL
+1 warning generated.
+Linking C executable cmTC_58412
+/usr/local/Cellar/cmake/3.17.2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_58412.dir/link.txt --verbose=1
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc  -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes -DOPUS_COMPILES -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_58412.dir/src.c.o  -o cmTC_58412  /usr/local/lib/libopusfile.dylib /usr/local/lib/libopus.dylib /usr/local/lib/libogg.dylib -lm 
+
+
+Source file was:
+
+            #include <opus/opusfile.h>
+            int main(void)
+            {
+                OggOpusFile *f;
+                OpusHead *v = 0;
+                (void)v;
+                op_free(f);
+                return 0;
+            }
+Performing C SOURCE FILE Test TTF_COMPILES succeeded with the following output:
+Change Dir: /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_20c12/fast && /Applications/Xcode.app/Contents/Developer/usr/bin/make  -f CMakeFiles/cmTC_20c12.dir/build.make CMakeFiles/cmTC_20c12.dir/build
+Building C object CMakeFiles/cmTC_20c12.dir/src.c.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc  -I/usr/local/include/freetype2  -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes -DTTF_COMPILES   -o CMakeFiles/cmTC_20c12.dir/src.c.o   -c /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp/src.c
+/Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp/src.c:9:26: warning: unused variable 'e' [-Wunused-variable]
+                FT_Error e;
+                         ^
+/Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp/src.c:13:44: warning: variable 'ft_index' is uninitialized when used here [-Wuninitialized]
+                return FT_Load_Glyph(face, ft_index, ft_load_flags);
+                                           ^~~~~~~~
+/Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp/src.c:10:29: note: initialize the variable 'ft_index' to silence this warning
+                int ft_index;
+                            ^
+                             = 0
+/Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp/src.c:13:54: warning: variable 'ft_load_flags' is uninitialized when used here [-Wuninitialized]
+                return FT_Load_Glyph(face, ft_index, ft_load_flags);
+                                                     ^~~~~~~~~~~~~
+/Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp/src.c:8:39: note: initialize the variable 'ft_load_flags' to silence this warning
+                FT_Int32 ft_load_flags;
+                                      ^
+                                       = 0
+3 warnings generated.
+Linking C executable cmTC_20c12
+/usr/local/Cellar/cmake/3.17.2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_20c12.dir/link.txt --verbose=1
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc  -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes -DTTF_COMPILES -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_20c12.dir/src.c.o  -o cmTC_20c12  /usr/local/lib/libfreetype.dylib 
+
+
+Source file was:
+
+            #include <ft2build.h>
+            #include FT_FREETYPE_H
+            int main(void) {
+                FT_Library ft;
+                FT_Open_Args args;
+                FT_Face face;
+                FT_Int32 ft_load_flags;
+                FT_Error e;
+                int ft_index;
+                FT_Init_FreeType(&ft);
+                FT_Open_Face(ft, &args, 0, &face);
+                return FT_Load_Glyph(face, ft_index, ft_load_flags);
+            }
+Performing C SOURCE FILE Test PHYSFS_IMPLICIT_ZLIB succeeded with the following output:
+Change Dir: /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_d99b7/fast && /Applications/Xcode.app/Contents/Developer/usr/bin/make  -f CMakeFiles/cmTC_d99b7.dir/build.make CMakeFiles/cmTC_d99b7.dir/build
+Building C object CMakeFiles/cmTC_d99b7.dir/src.c.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc   -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes -DPHYSFS_IMPLICIT_ZLIB   -o CMakeFiles/cmTC_d99b7.dir/src.c.o   -c /Users/mariana/Desktop/allegro/build/CMakeFiles/CMakeTmp/src.c
+Linking C executable cmTC_d99b7
+/usr/local/Cellar/cmake/3.17.2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_d99b7.dir/link.txt --verbose=1
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc  -fno-common -msse -W -Wall -Wpointer-arith -Wmissing-declarations -Wstrict-prototypes -DPHYSFS_IMPLICIT_ZLIB -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_d99b7.dir/src.c.o  -o cmTC_d99b7  /usr/local/lib/libphysfs.dylib 
+
+
+Source file was:
+
+            #include <physfs.h>
+
+            int main(int argc, char **argv)
+            {
+                (void)argc;
+                PHYSFS_init(argv[0]);
+                PHYSFS_deinit();
+                return 0;
+            }

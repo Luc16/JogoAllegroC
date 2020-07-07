@@ -1,0 +1,1 @@
+#define ALLEGRO_CFG_VIDEO_HAVE_OGV
