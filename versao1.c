@@ -28,7 +28,7 @@ struct movimento {
 // estrutura dos jogadores
 struct jogador {
   struct movimento mov_jogador;
-  bool pulando, chao, mov_lado;
+  bool pulando, chao, mov_direita, mov_esquerda;
   float posicao_y0; 
   int i_cair, i_pulo, lado;
 };
@@ -120,7 +120,7 @@ void colisao_chao(struct jogador *p, float y, int raio){
     }
 }
 
-void colidindo(float x1, float x2, float y, struct jogador *p, int raio){
+void colisao_geral(float x1, float x2, float y, struct jogador *p, int raio){
     if (colidindo(x1, x2, y, p, raio)){
         colisao_lateral(p, x1, x2, raio);
         colisao_teto(p, y, raio);
@@ -128,16 +128,22 @@ void colidindo(float x1, float x2, float y, struct jogador *p, int raio){
     }
 }
 
-void ativar_pulo(struct jogador *p, int jog_num){
-  p[jog_num].chao = false;
-  p[jog_num].pulando = true;
-  p[jog_num].i_pulo = 0;
-  p[jog_num].posicao_y0 = p[0].mov_jogador.y; 
+// movimentos
+void ativar_pulo(struct jogador *p){
+  p->chao = false;
+  p->pulando = true;
+  p->i_pulo = 0;
+  p->posicao_y0 = p[0].mov_jogador.y; 
 }
 
-void mover_lado(struct jogador *p, int jog_num, int _lado){
-  p[jog_num].mov_lado = true; 
-  p[jog_num].lado = _lado;
+void mover_esquerda(struct jogador *p, int _lado){
+  p->mov_esquerda = true; 
+  p->lado = _lado;
+}
+
+void mover_direita(struct jogador *p, int _lado){
+  p->mov_direita = true; 
+  p->lado = _lado;
 }
 
 int main(){
@@ -153,7 +159,8 @@ int main(){
     jogadores[i_jog].mov_jogador.y_anterior = 0;
     jogadores[i_jog].chao = false;
     jogadores[i_jog].pulando = false;
-    jogadores[i_jog].mov_lado = false; 
+    jogadores[i_jog].mov_esquerda = false; 
+    jogadores[i_jog].mov_direita = false; 
     jogadores[i_jog].posicao_y0 = 0; 
     jogadores[i_jog].lado = 0;
     jogadores[i_jog].i_cair = 0;
@@ -165,6 +172,7 @@ int main(){
 
   while (!sair){  
     tempo_inicial = al_get_time();
+
     for (i_jog = 0; i_jog < 2; i_jog++){
       jogadores[i_jog].mov_jogador.x_anterior = jogadores[i_jog].mov_jogador.x;
       jogadores[i_jog].mov_jogador.y_anterior = jogadores[i_jog].mov_jogador.y;
@@ -172,70 +180,106 @@ int main(){
 
     while(!al_is_event_queue_empty(fila_eventos)){
       al_wait_for_event(fila_eventos, &evento);
- 
+
       if (evento.type == ALLEGRO_EVENT_KEY_DOWN){
         switch (evento.keyboard.keycode){
           case ALLEGRO_KEY_UP:
             if (jogadores[0].chao){
-              ativar_pulo(&jogadores, 0);
+              ativar_pulo(&jogadores[0]);
             }
             break;
           case ALLEGRO_KEY_DOWN:
             jogadores[0].mov_jogador.y += 20;
             break;
           case ALLEGRO_KEY_LEFT:
-            if (!jogadores[0].mov_lado){
-              mover_lado(&jogadores, 0, -1);
-            }
+            mover_esquerda(&jogadores[0], -1);
             break; 
           case ALLEGRO_KEY_RIGHT:
-            if (!jogadores[0].mov_lado){
-              mover_lado(&jogadores, 0, 1);
-            }            
+            mover_direita(&jogadores[0], 1);
             break;
           case ALLEGRO_KEY_W:
             if (jogadores[1].chao){
-              ativar_pulo(&jogadores, 1);
+              ativar_pulo(&jogadores[1]);
             }
             break;
           case ALLEGRO_KEY_S:
             jogadores[1].mov_jogador.y += 20;
             break;
           case ALLEGRO_KEY_A:
-            if (!jogadores[1].mov_lado){
-              mover_lado(&jogadores, 0, -1);
-            }
+            mover_esquerda(&jogadores[1], -1);
             break; 
           case ALLEGRO_KEY_D:
-            if (!jogadores[1].mov_lado){
-              mover_lado(&jogadores, 0, 1);
-            }            
+            mover_direita(&jogadores[1], 1);
             break;
         }
       }
       else if (evento.type == ALLEGRO_EVENT_KEY_UP){
         switch (evento.keyboard.keycode){
           case ALLEGRO_KEY_RIGHT:
-            jogadores[0].mov_lado = false;
+            jogadores[0].mov_direita = false;
             break;
           case ALLEGRO_KEY_LEFT:
-            jogadores[0].mov_lado = false;
+            jogadores[0].mov_esquerda = false;
             break;
           case ALLEGRO_KEY_D:
-            jogadores[1].mov_lado = false;
+            jogadores[1].mov_direita = false;
             break;
           case ALLEGRO_KEY_A:
-            jogadores[1].mov_lado = false;
+            jogadores[1].mov_esquerda = false;
             break;
         }
       }
       else if (evento.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
         sair = true;
     }
-    
+
     al_clear_to_color(al_map_rgb(0, 0, 0));
     al_draw_bitmap(fundo, 0, 0, 0);
+
+    for (i_jog = 0; i_jog < 2; i_jog++){
+      if (jogadores[i_jog].pulando){
+        jogadores[i_jog].mov_jogador.y = jogadores[i_jog].posicao_y0 + 400*jogadores[i_jog].i_pulo*jogadores[i_jog].i_pulo/3600.0 - 600*jogadores[i_jog].i_pulo/60.0;
+        jogadores[i_jog].i_pulo++;
+      } else {
+        jogadores[i_jog].chao = false;
+        jogadores[i_jog].mov_jogador.y += 10*jogadores[i_jog].i_cair*jogadores[i_jog].i_cair/3600.0;
+      }
+      if (jogadores[i_jog].mov_direita || jogadores[i_jog].mov_esquerda){
+        jogadores[i_jog].mov_jogador.x += jogadores[i_jog].lado*4;
+      }
+      // chão 
+      colisao_geral(0, LARGURA_TELA, 710, &jogadores[i_jog], r);
+      // baixo direita canto
+      colisao_geral(1100, LARGURA_TELA, 400, &jogadores[i_jog], r);
+      // baixo direta meio
+      colisao_geral(800, 1050, 540, &jogadores[i_jog], r);
+
+      if (jogadores[i_jog].mov_jogador.y >= ALTURA_TELA)
+        al_draw_text(fonte, al_map_rgb(255, 0, 0), LARGURA_TELA/2, ALTURA_TELA/2, ALLEGRO_ALIGN_CENTRE, "VOCE PERDEU O JOGO");
+      if (jogadores[i_jog].mov_jogador.y >= ALTURA_TELA + 1000) sair = true;
+      jogadores[i_jog].i_cair++;
+    }
+
+    // chão 
+    al_draw_line(0, 710, LARGURA_TELA, 710, al_map_rgb(0, 255, 0), 40);
+    // baixo direita canto
+    al_draw_line(1100, 400, LARGURA_TELA, 400, al_map_rgb(255, 255, 0), 40);
+    // baixo direta meio
+    al_draw_line(800, 540, 1050, 540, al_map_rgb(255, 255, 0), 40);
+
+
+    al_draw_filled_circle(jogadores[0].mov_jogador.x, jogadores[0].mov_jogador.y, r, al_map_rgb(255, 0, 0));
+    al_draw_filled_circle(jogadores[1].mov_jogador.x, jogadores[1].mov_jogador.y, r, al_map_rgb(0, 0, 255));
+
+    
+    al_flip_display();
+
+    // setando fps
+    tempo_final = al_get_time() - tempo_inicial;
+    if (tempo_final < 1.0/60.0)
+      al_rest(1.0/60.0-tempo_final);
   }
+
   al_destroy_font(fonte);
   al_destroy_display(janela);
   al_destroy_event_queue(fila_eventos);

@@ -112,6 +112,11 @@ void colisao(float x1, float x2, float y, struct player *p, int raio){
   }
 }
 
+void lateral(struct player *p, int pm){
+  p->side = true; 
+  p->sidex = pm;
+}
+
 int main(){
 
   struct player p[2];
@@ -163,14 +168,16 @@ int main(){
             break;
           case ALLEGRO_KEY_LEFT:
             if (!p[0].side){
-              p[0].side = true; 
-              p[0].sidex = -1;               
+              lateral(&p[0], -1);
+              // p[0].side = true; 
+              // p[0].sidex = -1;               
             }
             break; 
           case ALLEGRO_KEY_RIGHT:
             if (!p[0].side){
-              p[0].side = true; 
-              p[0].sidex = 1;               
+              lateral(&p[0], 1);
+              // p[0].side = true; 
+              // p[0].sidex = 1;               
             }            
             break;
           case ALLEGRO_KEY_W:
@@ -220,6 +227,7 @@ int main(){
 
     al_clear_to_color(al_map_rgb(0, 0, 0));
     al_draw_bitmap(fundo, 0, 0, 0);
+    
     for (n = 0; n < 2; n++){
       if (p[n].up){
         p[n].move_p.posy = p[n].posy0 + 400*p[n].j*p[n].j/3600.0 - 600*p[n].j/60.0;
@@ -232,19 +240,24 @@ int main(){
         p[n].move_p.posx += p[n].sidex*4;
       }
       // chão 
-      al_draw_line(0, 710, LARGURA_TELA, 710, al_map_rgb(0, 255, 0), 40);
       colisao(0, LARGURA_TELA, 710, &p[n], r);
       // baixo direita canto
-      al_draw_line(1100, 400, LARGURA_TELA, 400, al_map_rgb(255, 255, 0), 40);
       colisao(1100, LARGURA_TELA, 400, &p[n], r);
       // baixo direta meio
-      al_draw_line(800, 540, 1050, 540, al_map_rgb(255, 255, 0), 40);
       colisao(800, 1050, 540, &p[n], r);
       if (p[n].move_p.posy >= ALTURA_TELA)
         al_draw_text(fonte, al_map_rgb(255, 0, 0), LARGURA_TELA/2, ALTURA_TELA/2, ALLEGRO_ALIGN_CENTRE, "VOCE PERDEU O JOGO");
       if (p[n].move_p.posy >= ALTURA_TELA + 1000) sair = true;
       p[n].i++;
     }
+    // chão 
+    al_draw_line(0, 710, LARGURA_TELA, 710, al_map_rgb(0, 255, 0), 40);
+    // baixo direita canto
+    al_draw_line(1100, 400, LARGURA_TELA, 400, al_map_rgb(255, 255, 0), 40);
+    // baixo direta meio
+    al_draw_line(800, 540, 1050, 540, al_map_rgb(255, 255, 0), 40);
+
+
     al_draw_filled_circle(p[0].move_p.posx, p[0].move_p.posy, r, al_map_rgb(255, 0, 0));
     al_draw_filled_circle(p[1].move_p.posx, p[1].move_p.posy, r, al_map_rgb(0, 0, 255));
 
