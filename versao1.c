@@ -25,6 +25,7 @@ char *plano_de_fundo = "Images/bk_main.png";
 struct movimento {
   float x, y, x_anterior, y_anterior;
 };
+
 // estrutura dos jogadores
 struct jogador {
   struct movimento mov_jogador;
@@ -32,6 +33,7 @@ struct jogador {
   float posicao_y0; 
   int i_cair, i_pulo, lado;
 };
+
 // Função de inicialização
 bool inicializar(){
   if (!al_init()){
@@ -92,58 +94,119 @@ bool inicializar(){
 }
 
 // colisões
-bool colidindo(float x1, float x2, float y, struct jogador *p, int raio){
-    return p->mov_jogador.y - raio < y + 20 &&
-     p->mov_jogador.y + raio > y - 20 &&
-      p->mov_jogador.x + raio > x1 &&
-       p->mov_jogador.x - raio < x2;
+bool colidindo(float x1, float x2, float y, struct jogador *jog, int raio){
+    return jog->mov_jogador.y - raio < y + 20 &&
+     jog->mov_jogador.y + raio > y - 20 &&
+      jog->mov_jogador.x + raio > x1 &&
+       jog->mov_jogador.x - raio < x2;
 }
 
-void colisao_lateral(struct jogador *p, float x1, float x2, int raio){
-    if (p->mov_jogador.x_anterior + raio <= x1 || p->mov_jogador.x_anterior - raio >= x2 )
-      p->mov_jogador.x = p->mov_jogador.x_anterior; 
+void colisao_lateral(struct jogador *jog, float x1, float x2, int raio){
+    if (jog->mov_jogador.x_anterior + raio <= x1 || jog->mov_jogador.x_anterior - raio >= x2 )
+      jog->mov_jogador.x = jog->mov_jogador.x_anterior; 
 }
 
-void colisao_teto(struct jogador *p, float y, int raio){
-    if (p->mov_jogador.y_anterior - raio > y + 20) {
-      p->mov_jogador.y = y + 20.001 + raio;
-      p->pulando = false;
+void colisao_teto(struct jogador *jog, float y, int raio){
+    if (jog->mov_jogador.y_anterior - raio > y + 20) {
+      jog->mov_jogador.y = y + 20.001 + raio;
+      jog->pulando = false;
     }
 }
 
-void colisao_chao(struct jogador *p, float y, int raio){
-    if (p->mov_jogador.y_anterior + raio < y - 20){
-      p->mov_jogador.y = y - 20.001 - raio;
-      p->chao = true;
-      p->i_cair = 0;
-      p->pulando = false;
+void colisao_chao(struct jogador *jog, float y, int raio){
+    if (jog->mov_jogador.y_anterior + raio < y - 20){
+      jog->mov_jogador.y = y - 20.001 - raio;
+      jog->chao = true;
+      jog->i_cair = 0;
+      jog->pulando = false;
     }
 }
 
-void colisao_geral(float x1, float x2, float y, struct jogador *p, int raio){
-    if (colidindo(x1, x2, y, p, raio)){
-        colisao_lateral(p, x1, x2, raio);
-        colisao_teto(p, y, raio);
-        colisao_chao(p, y, raio);
+void colisao_geral(float x1, float x2, float y, struct jogador *jog, int raio){
+    if (colidindo(x1, x2, y, jog, raio)){
+        colisao_lateral(jog, x1, x2, raio);
+        colisao_teto(jog, y, raio);
+        colisao_chao(jog, y, raio);
     }
 }
 
 // movimentos
-void ativar_pulo(struct jogador *p){
-  p->chao = false;
-  p->pulando = true;
-  p->i_pulo = 0;
-  p->posicao_y0 = p[0].mov_jogador.y; 
+void ativar_pulo(struct jogador *jog){
+  jog->chao = false;
+  jog->pulando = true;
+  jog->i_pulo = 0;
+  jog->posicao_y0 = jog->mov_jogador.y; 
 }
 
-void mover_esquerda(struct jogador *p, int _lado){
-  p->mov_esquerda = true; 
-  p->lado = _lado;
+void mover_esquerda(struct jogador *jog, int _lado){
+  jog->mov_esquerda = true; 
+  jog->lado = _lado;
 }
 
-void mover_direita(struct jogador *p, int _lado){
-  p->mov_direita = true; 
-  p->lado = _lado;
+void mover_direita(struct jogador *jog, int _lado){
+  jog->mov_direita = true; 
+  jog->lado = _lado;
+}
+
+void pular(struct jogador *jog){
+  jog->mov_jogador.y = jog->posicao_y0 + 400*jog->i_pulo*jog->i_pulo/3600.0 - 600*jog->i_pulo/60.0;
+  jog->i_pulo++;
+}
+
+void cair(struct jogador *jog){
+  jog->chao = false;
+  jog->mov_jogador.y += 10*jog->i_cair*jog->i_cair/3600.0;
+}
+
+// lidar com botoes
+void apertar_botao(ALLEGRO_EVENT evento, struct jogador *jog){
+  switch (evento.keyboard.keycode){
+    case ALLEGRO_KEY_UP:
+      if (jog[0].chao){
+        ativar_pulo(&jog[0]);
+      }
+      break;
+    case ALLEGRO_KEY_DOWN:
+      jog[0].mov_jogador.y += 20;
+      break;
+    case ALLEGRO_KEY_LEFT:
+      mover_esquerda(&jog[0], -1);
+      break; 
+    case ALLEGRO_KEY_RIGHT:
+      mover_direita(&jog[0], 1);
+      break;
+    case ALLEGRO_KEY_W:
+      if (jog[1].chao){
+        ativar_pulo(&jog[1]);
+      }
+      break;
+    case ALLEGRO_KEY_S:
+      jog[1].mov_jogador.y += 20;
+      break;
+    case ALLEGRO_KEY_A:
+      mover_esquerda(&jog[1], -1);
+      break; 
+    case ALLEGRO_KEY_D:
+      mover_direita(&jog[1], 1);
+      break;
+  }
+}
+
+void soltar_botao(ALLEGRO_EVENT evento, struct jogador *jog){
+  switch (evento.keyboard.keycode){
+    case ALLEGRO_KEY_RIGHT:
+      jog[0].mov_direita = false;
+      break;
+    case ALLEGRO_KEY_LEFT:
+      jog[0].mov_esquerda = false;
+      break;
+    case ALLEGRO_KEY_D:
+      jog[1].mov_direita = false;
+      break;
+    case ALLEGRO_KEY_A:
+      jog[1].mov_esquerda = false;
+      break;
+  }
 }
 
 int main(){
@@ -181,54 +244,11 @@ int main(){
     while(!al_is_event_queue_empty(fila_eventos)){
       al_wait_for_event(fila_eventos, &evento);
 
-      if (evento.type == ALLEGRO_EVENT_KEY_DOWN){
-        switch (evento.keyboard.keycode){
-          case ALLEGRO_KEY_UP:
-            if (jogadores[0].chao){
-              ativar_pulo(&jogadores[0]);
-            }
-            break;
-          case ALLEGRO_KEY_DOWN:
-            jogadores[0].mov_jogador.y += 20;
-            break;
-          case ALLEGRO_KEY_LEFT:
-            mover_esquerda(&jogadores[0], -1);
-            break; 
-          case ALLEGRO_KEY_RIGHT:
-            mover_direita(&jogadores[0], 1);
-            break;
-          case ALLEGRO_KEY_W:
-            if (jogadores[1].chao){
-              ativar_pulo(&jogadores[1]);
-            }
-            break;
-          case ALLEGRO_KEY_S:
-            jogadores[1].mov_jogador.y += 20;
-            break;
-          case ALLEGRO_KEY_A:
-            mover_esquerda(&jogadores[1], -1);
-            break; 
-          case ALLEGRO_KEY_D:
-            mover_direita(&jogadores[1], 1);
-            break;
-        }
-      }
-      else if (evento.type == ALLEGRO_EVENT_KEY_UP){
-        switch (evento.keyboard.keycode){
-          case ALLEGRO_KEY_RIGHT:
-            jogadores[0].mov_direita = false;
-            break;
-          case ALLEGRO_KEY_LEFT:
-            jogadores[0].mov_esquerda = false;
-            break;
-          case ALLEGRO_KEY_D:
-            jogadores[1].mov_direita = false;
-            break;
-          case ALLEGRO_KEY_A:
-            jogadores[1].mov_esquerda = false;
-            break;
-        }
-      }
+      if (evento.type == ALLEGRO_EVENT_KEY_DOWN)
+        apertar_botao(evento, jogadores);
+      else if (evento.type == ALLEGRO_EVENT_KEY_UP)
+        soltar_botao(evento, jogadores);
+
       else if (evento.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
         sair = true;
     }
@@ -238,11 +258,9 @@ int main(){
 
     for (i_jog = 0; i_jog < 2; i_jog++){
       if (jogadores[i_jog].pulando){
-        jogadores[i_jog].mov_jogador.y = jogadores[i_jog].posicao_y0 + 400*jogadores[i_jog].i_pulo*jogadores[i_jog].i_pulo/3600.0 - 600*jogadores[i_jog].i_pulo/60.0;
-        jogadores[i_jog].i_pulo++;
+        pular(&jogadores[i_jog]);
       } else {
-        jogadores[i_jog].chao = false;
-        jogadores[i_jog].mov_jogador.y += 10*jogadores[i_jog].i_cair*jogadores[i_jog].i_cair/3600.0;
+        cair(&jogadores[i_jog]);
       }
       if (jogadores[i_jog].mov_direita || jogadores[i_jog].mov_esquerda){
         jogadores[i_jog].mov_jogador.x += jogadores[i_jog].lado*4;
@@ -254,6 +272,16 @@ int main(){
       // baixo direta meio
       colisao_geral(800, 1050, 540, &jogadores[i_jog], r);
 
+      // if (jogadores[i_jog].mov_jogador.x <= 20){
+      //   if (i_jog == 0){
+      //     jogadores[i_jog].mov_jogador.x = jogadores[1].mov_jogador.x;
+      //     jogadores[i_jog].mov_jogador.y = jogadores[1].mov_jogador.y;
+      //   } 
+      //   else {
+      //     jogadores[i_jog].mov_jogador.x = jogadores[0].mov_jogador.x;
+      //     jogadores[i_jog].mov_jogador.y = jogadores[0].mov_jogador.y;
+      //   } 
+      // }
       if (jogadores[i_jog].mov_jogador.y >= ALTURA_TELA)
         al_draw_text(fonte, al_map_rgb(255, 0, 0), LARGURA_TELA/2, ALTURA_TELA/2, ALLEGRO_ALIGN_CENTRE, "VOCE PERDEU O JOGO");
       if (jogadores[i_jog].mov_jogador.y >= ALTURA_TELA + 1000) sair = true;

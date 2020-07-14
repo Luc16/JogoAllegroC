@@ -1,96 +1,212 @@
-// Os arquivos de cabeçalho
 #include <allegro5/allegro.h>
+#include <allegro5/allegro_image.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
-#include <math.h>
-
-// Para utilizarmos a função fprintf
+ 
 #include <stdio.h>
-
-// Atributos da tela
+#include <string.h>
+#include <stdbool.h>
+ 
 const int LARGURA_TELA = 640;
 const int ALTURA_TELA = 480;
-int i = 0;
-int j = 0;
-int r = 75;
-int a = 0;
-
+ 
+ALLEGRO_BITMAP *fundo = NULL;
+ALLEGRO_DISPLAY *janela = NULL;
+ALLEGRO_FONT *fonte = NULL;
+ALLEGRO_EVENT_QUEUE *fila_eventos = NULL;
+ 
+char str[17];
+ 
+void manipular_entrada(ALLEGRO_EVENT evento);
+void exibir_texto_centralizado();
+ 
+bool inicializar();
+bool carregar_arquivos();
+void finalizar();
+ 
 int main(void)
 {
-  // A nossa janela
-  ALLEGRO_DISPLAY *janela = NULL;
-
-  // O nosso arquivo de fonte
-  ALLEGRO_FONT *fonte = NULL;
-  ALLEGRO_FONT *fonte_da_Ana = NULL;
-
-  // Inicialização da biblioteca Allegro
+  bool sair = false;
+  bool concluido = false;
+ 
+  if (!inicializar())
+  {
+    return -1;
+  }
+ 
+  strcpy(str, "");
+ 
+  if (!carregar_arquivos())
+  {
+    return -1;
+  }
+ 
+  while (!sair)
+  {
+    while (!al_is_event_queue_empty(fila_eventos))
+    {
+      ALLEGRO_EVENT evento;
+      al_wait_for_event(fila_eventos, &evento);
+ 
+      if (!concluido)
+      {
+        manipular_entrada(evento);
+ 
+        if (evento.type == ALLEGRO_EVENT_KEY_DOWN && evento.keyboard.keycode == ALLEGRO_KEY_ENTER)
+        {
+          concluido = true;
+        }
+      }
+ 
+      if (evento.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
+      {
+        sair = true;
+      }
+    }
+ 
+    al_draw_bitmap(fundo, 0, 0, 0);
+ 
+    if (!concluido)
+    {
+      al_draw_text(fonte, al_map_rgb(255, 255, 255), LARGURA_TELA / 2,
+          (ALTURA_TELA / 2 - al_get_font_ascent(fonte)) / 2,
+          ALLEGRO_ALIGN_CENTRE, "Melhor Pontuação! Nome:");
+    }
+    else
+    {
+      al_draw_text(fonte, al_map_rgb(255, 255, 255), LARGURA_TELA / 2,
+          (ALTURA_TELA / 2 - al_get_font_ascent(fonte)) / 2,
+          ALLEGRO_ALIGN_CENTRE, "1º Lugar");
+    }
+ 
+    exibir_texto_centralizado();
+ 
+    al_flip_display();
+  }
+ 
+  finalizar();
+ 
+  return 0;
+}
+ 
+bool inicializar()
+{
   if (!al_init())
   {
-    fprintf(stderr, "Falha ao inicializar a Allegro.\n");
-    return -1;
+    fprintf(stderr, "Falha ao inicializar a biblioteca Allegro.\n");
+    return false;
   }
-
-  // Inicialização do add-on para uso de fontes
+ 
+  if (!al_install_keyboard())
+  {
+    fprintf(stderr, "Falha ao inicializar teclado.\n");
+    return false;
+  }
+ 
+  if (!al_init_image_addon())
+  {
+    fprintf(stderr, "Falha ao inicializar allegro_image.\n");
+    return false;
+  }
+ 
   al_init_font_addon();
-
-  // Inicialização do add-on para uso de fontes True Type
+ 
   if (!al_init_ttf_addon())
   {
-    fprintf(stderr, "Falha ao inicializar add-on allegro_ttf.\n");
-    return -1;
+    fprintf(stderr, "Falha ao inicializar allegro_ttf.\n");
+    return false;
   }
-
-  // Criação da nossa janela
+ 
   janela = al_create_display(LARGURA_TELA, ALTURA_TELA);
   if (!janela)
   {
-    fprintf(stderr, "Falha ao criar janela.\n");
-    return -1;
+    fprintf(stderr, "Falha ao criar a janela.\n");
+    return false;
   }
-
-  // Carregando o arquivo de fonte
-//   ALLEGRO_FONT *_al_load_bitmap_font(const char *filename, int size, int flags);
-  fonte = al_load_font("Roboto-Regular.ttf", 30, 0);
-  fonte_da_Ana = al_load_font("Roboto-Regular.ttf", 60, 0);
-  if (fonte == NULL || fonte_da_Ana == NULL)
+ 
+  fila_eventos = al_create_event_queue();
+  if (!fila_eventos)
   {
-    al_destroy_display(janela);
-    fprintf(stderr, "Falha ao carregar fonte.\n");
-    return -1;
+    fprintf(stderr, "Falha ao criar fila de eventos.\n");
+    return false;
   }
-
-  // Preenchemos a tela com a cor branca
-  al_clear_to_color(al_map_rgb(255, 255, 255));
-
-  // Texto alinhado à esquerda
-  // eq circ: (x-x0)^2+(y-y0)^2=r^2
-  for (i=0;i<360;i++){
-    if (sin(i)*360<80){
-        al_draw_text(fonte, al_map_rgb(255, 0, 0), 245+r*cos(i), 200+r*sin(i), ALLEGRO_ALIGN_LEFT, ".");
-        al_draw_text(fonte, al_map_rgb(255, 0, 0), 395+r*cos(i), 200+r*sin(i), ALLEGRO_ALIGN_LEFT, ".");
-    }
-    for (j=0;j<360;j++){
-        if (i == j){
-            al_draw_text(fonte, al_map_rgb(255, 0, 0), 170+j*5/12, 200+i*5/9, ALLEGRO_ALIGN_LEFT, ".");
-            al_draw_text(fonte, al_map_rgb(255, 0, 0), 320+j*5/12, 400-i*5/9, ALLEGRO_ALIGN_LEFT, ".");
-        }
-      }
+ 
+  al_set_window_title(janela, "Entrada de Texto");
+ 
+  al_register_event_source(fila_eventos, al_get_display_event_source(janela));
+  al_register_event_source(fila_eventos, al_get_keyboard_event_source());
+ 
+  return true;
+}
+ 
+bool carregar_arquivos()
+{
+  fundo = al_load_bitmap("Images/bk_main.png");
+  if (!fundo)
+  {
+    fprintf(stderr, "Falha ao carregar \"bg.jpg\".\n");
+    return false;
   }
-
-  // Exemplo de impressão de valores variáveis
-  char *texto = "A Ana é perfeita";
-  al_draw_textf(fonte_da_Ana, al_map_rgb(0, 192, 159), LARGURA_TELA / 2, 250, ALLEGRO_ALIGN_CENTRE, texto);
-
-  // Atualizamos a tela
-  al_flip_display();
-
-  // E aguardamos 10 segundos
-  al_rest(15.0);
-
-  // Desalocação da fonte e da janela
+ 
+  fonte = al_load_font("Roboto-Regular.ttf", 42, 0);
+  if (!fonte)
+  {
+    fprintf(stderr, "Falha ao carregar \"comic.ttf\".\n");
+    return false;
+  }
+ 
+  return true;
+}
+ 
+void finalizar()
+{
+  al_destroy_bitmap(fundo);
   al_destroy_font(fonte);
+  al_destroy_event_queue(fila_eventos);
   al_destroy_display(janela);
-
-  return 0;
+}
+ 
+void manipular_entrada(ALLEGRO_EVENT evento)
+{
+  if (evento.type == ALLEGRO_EVENT_KEY_CHAR)
+  {
+    if (strlen(str) <= 16)
+    {
+      char temp[] = {evento.keyboard.unichar, '\0'};
+      if (evento.keyboard.unichar == ' ')
+      {
+        strcat(str, temp);
+      }
+      else if (evento.keyboard.unichar >= '0' &&
+          evento.keyboard.unichar <= '9')
+      {
+        strcat(str, temp);
+      }
+      else if (evento.keyboard.unichar >= 'A' &&
+          evento.keyboard.unichar <= 'Z')
+      {
+        strcat(str, temp);
+      }
+      else if (evento.keyboard.unichar >= 'a' &&
+          evento.keyboard.unichar <= 'z')
+      {
+        strcat(str, temp);
+      }
+    }
+ 
+    if (evento.keyboard.keycode == ALLEGRO_KEY_BACKSPACE && strlen(str) != 0)
+    {
+      str[strlen(str) - 1] = '\0';
+    }
+  }
+}
+ 
+void exibir_texto_centralizado()
+{
+  if (strlen(str) > 0)
+  {
+    al_draw_text(fonte, al_map_rgb(255, 255, 255), LARGURA_TELA / 2,
+        (ALTURA_TELA - al_get_font_ascent(fonte)) / 2,
+        ALLEGRO_ALIGN_CENTRE, str);
+  }
 }
