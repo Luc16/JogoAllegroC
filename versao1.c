@@ -29,7 +29,7 @@ struct movimento {
 // estrutura dos jogadores
 struct jogador {
   struct movimento mov_jogador;
-  bool pulando, chao, mov_direita, mov_esquerda;
+  bool pulando, chao, mov_direita, mov_esquerda, morto;
   float posicao_y0; 
   int i_cair, i_pulo, lado;
 };
@@ -65,7 +65,7 @@ bool inicializar(){
  
   al_set_window_title(janela, "Joguinho");
  
-  fonte = al_load_font("Roboto-Regular.ttf", 30, 0);
+  fonte = al_load_font("Roboto-Regular.ttf", 100, 0);
   if (!fonte){
     fprintf(stderr, "Falha ao carregar \"fonte comic.ttf\".\n");
     al_destroy_display(janela);
@@ -94,40 +94,51 @@ bool inicializar(){
 }
 
 // colisões
-bool colidindo(float x1, float x2, float y, struct jogador *jog, int raio){
-    return jog->mov_jogador.y - raio < y + 20 &&
-     jog->mov_jogador.y + raio > y - 20 &&
-      jog->mov_jogador.x + raio > x1 &&
-       jog->mov_jogador.x - raio < x2;
+bool colidindo(float x_esquerda, float x_direita, float y_cima, float y_baixo, struct jogador *jog, int raio){
+    return jog->mov_jogador.y - raio < y_baixo &&
+     jog->mov_jogador.y + raio > y_cima &&
+      jog->mov_jogador.x + raio > x_esquerda &&
+       jog->mov_jogador.x - raio < x_direita;
 }
 
-void colisao_lateral(struct jogador *jog, float x1, float x2, int raio){
-    if (jog->mov_jogador.x_anterior + raio <= x1 || jog->mov_jogador.x_anterior - raio >= x2 )
+void colisao_lateral(struct jogador *jog, float x_esquerda, float x_direita, int raio){
+    if (jog->mov_jogador.x_anterior + raio <= x_esquerda || jog->mov_jogador.x_anterior - raio >= x_direita )
       jog->mov_jogador.x = jog->mov_jogador.x_anterior; 
 }
 
-void colisao_teto(struct jogador *jog, float y, int raio){
-    if (jog->mov_jogador.y_anterior - raio > y + 20) {
-      jog->mov_jogador.y = y + 20.001 + raio;
-      jog->pulando = false;
-    }
-}
-
-void colisao_chao(struct jogador *jog, float y, int raio){
-    if (jog->mov_jogador.y_anterior + raio < y - 20){
-      jog->mov_jogador.y = y - 20.001 - raio;
-      jog->chao = true;
+void colisao_teto(struct jogador *jog, float y_baixo, int raio){
+    if (jog->mov_jogador.y_anterior - raio > y_baixo) {
+      jog->mov_jogador.y = y_baixo + 0.001 + raio;
+      jog->posicao_y0 = jog->mov_jogador.y;
       jog->i_cair = 0;
       jog->pulando = false;
     }
 }
 
-void colisao_geral(float x1, float x2, float y, struct jogador *jog, int raio){
-    if (colidindo(x1, x2, y, jog, raio)){
-        colisao_lateral(jog, x1, x2, raio);
-        colisao_teto(jog, y, raio);
-        colisao_chao(jog, y, raio);
+void colisao_chao(struct jogador *jog, float y_cima, int raio){
+    if (jog->mov_jogador.y_anterior + raio < y_cima){
+      jog->mov_jogador.y = y_cima - 0.001 - raio;
+      jog->i_cair = 0;
+      if(jog->chao == false){
+        jog->posicao_y0 = jog->mov_jogador.y;
+        jog->chao = true;
+        jog->pulando = false;
+      }
     }
+}
+
+void colisao_geral(float x_esquerda, float x_direita, float y_cima, float y_baixo, struct jogador *jog, int raio){
+    if (colidindo(x_esquerda, x_direita, y_cima, y_baixo, jog, raio)){
+        colisao_lateral(jog, x_esquerda, x_direita, raio);
+        colisao_teto(jog, y_baixo, raio);
+        colisao_chao(jog, y_cima, raio);
+    }
+}
+
+void colisao_mortal(float x_esquerda, float x_direita, float y_cima, float y_baixo, struct jogador *jog, int raio){
+  if (colidindo(x_esquerda, x_direita, y_cima, y_baixo, jog, raio)){
+    jog->morto = true;
+  }
 }
 
 // movimentos
@@ -148,6 +159,10 @@ void mover_direita(struct jogador *jog, int _lado){
   jog->lado = _lado;
 }
 
+void mover_lado(struct jogador *jog){
+  jog->mov_jogador.x += jog->lado*4;
+}
+
 void pular(struct jogador *jog){
   jog->mov_jogador.y = jog->posicao_y0 + 400*jog->i_pulo*jog->i_pulo/3600.0 - 600*jog->i_pulo/60.0;
   jog->i_pulo++;
@@ -155,7 +170,7 @@ void pular(struct jogador *jog){
 
 void cair(struct jogador *jog){
   jog->chao = false;
-  jog->mov_jogador.y += 10*jog->i_cair*jog->i_cair/3600.0;
+  jog->mov_jogador.y = jog->posicao_y0 + 400*jog->i_cair*jog->i_cair/3600.0;
 }
 
 // lidar com botoes
@@ -211,11 +226,11 @@ void soltar_botao(ALLEGRO_EVENT evento, struct jogador *jog){
 
 int main(){
   struct jogador jogadores[numero_de_jogadores];
-  bool sair = false;
+  bool sair = false, fim = false;
   int r = 20, i_jog;
   double tempo_inicial, tempo_final;
 
-  for (i_jog = 0; i_jog < 2; i_jog++){
+  for (i_jog = 0; i_jog < numero_de_jogadores; i_jog++){
     jogadores[i_jog].mov_jogador.x = LARGURA_TELA/2;
     jogadores[i_jog].mov_jogador.x_anterior = LARGURA_TELA/2;
     jogadores[i_jog].mov_jogador.y = 0;
@@ -224,6 +239,7 @@ int main(){
     jogadores[i_jog].pulando = false;
     jogadores[i_jog].mov_esquerda = false; 
     jogadores[i_jog].mov_direita = false; 
+    jogadores[i_jog].morto = false;
     jogadores[i_jog].posicao_y0 = 0; 
     jogadores[i_jog].lado = 0;
     jogadores[i_jog].i_cair = 0;
@@ -231,12 +247,13 @@ int main(){
   }
 
   if (!inicializar()) return -1;
+
   al_draw_bitmap(fundo, 0, 0, 0);
 
   while (!sair){  
     tempo_inicial = al_get_time();
 
-    for (i_jog = 0; i_jog < 2; i_jog++){
+    for (i_jog = 0; i_jog < numero_de_jogadores; i_jog++){
       jogadores[i_jog].mov_jogador.x_anterior = jogadores[i_jog].mov_jogador.x;
       jogadores[i_jog].mov_jogador.y_anterior = jogadores[i_jog].mov_jogador.y;
     }
@@ -256,49 +273,51 @@ int main(){
     al_clear_to_color(al_map_rgb(0, 0, 0));
     al_draw_bitmap(fundo, 0, 0, 0);
 
-    for (i_jog = 0; i_jog < 2; i_jog++){
+    for (i_jog = 0; i_jog < numero_de_jogadores; i_jog++){
       if (jogadores[i_jog].pulando){
         pular(&jogadores[i_jog]);
       } else {
         cair(&jogadores[i_jog]);
       }
       if (jogadores[i_jog].mov_direita || jogadores[i_jog].mov_esquerda){
-        jogadores[i_jog].mov_jogador.x += jogadores[i_jog].lado*4;
+        mover_lado(&jogadores[i_jog]);
       }
       // chão 
-      colisao_geral(0, LARGURA_TELA, 710, &jogadores[i_jog], r);
+      colisao_geral(0, LARGURA_TELA, 690, ALTURA_TELA, &jogadores[i_jog], r);
       // baixo direita canto
-      colisao_geral(1100, LARGURA_TELA, 400, &jogadores[i_jog], r);
+      colisao_geral(1100, LARGURA_TELA, 380, 420, &jogadores[i_jog], r);
       // baixo direta meio
-      colisao_geral(800, 1050, 540, &jogadores[i_jog], r);
+      colisao_geral(800, 1050, 520, 560, &jogadores[i_jog], r);
+      //linha que mata
+      colisao_mortal(380, 420, 480, 690, &jogadores[i_jog], r);
 
-      // if (jogadores[i_jog].mov_jogador.x <= 20){
-      //   if (i_jog == 0){
-      //     jogadores[i_jog].mov_jogador.x = jogadores[1].mov_jogador.x;
-      //     jogadores[i_jog].mov_jogador.y = jogadores[1].mov_jogador.y;
-      //   } 
-      //   else {
-      //     jogadores[i_jog].mov_jogador.x = jogadores[0].mov_jogador.x;
-      //     jogadores[i_jog].mov_jogador.y = jogadores[0].mov_jogador.y;
-      //   } 
-      // }
-      if (jogadores[i_jog].mov_jogador.y >= ALTURA_TELA)
-        al_draw_text(fonte, al_map_rgb(255, 0, 0), LARGURA_TELA/2, ALTURA_TELA/2, ALLEGRO_ALIGN_CENTRE, "VOCE PERDEU O JOGO");
-      if (jogadores[i_jog].mov_jogador.y >= ALTURA_TELA + 1000) sair = true;
+      if (jogadores[i_jog].mov_jogador.y >= ALTURA_TELA + 1000) jogadores[i_jog].morto = true;
+
       jogadores[i_jog].i_cair++;
     }
 
     // chão 
-    al_draw_line(0, 710, LARGURA_TELA, 710, al_map_rgb(0, 255, 0), 40);
+    al_draw_filled_rectangle(0, 690, LARGURA_TELA, ALTURA_TELA, al_map_rgb(0, 255, 0));
     // baixo direita canto
-    al_draw_line(1100, 400, LARGURA_TELA, 400, al_map_rgb(255, 255, 0), 40);
+    al_draw_filled_rectangle(1100, 380, LARGURA_TELA, 420, al_map_rgb(255, 255, 0)); 
     // baixo direta meio
-    al_draw_line(800, 540, 1050, 540, al_map_rgb(255, 255, 0), 40);
+    al_draw_filled_rectangle(800, 520, 1050, 560, al_map_rgb(255, 255, 0)); 
+    //parede da morte
+    al_draw_filled_rectangle(380, 690, 420, 480, al_map_rgb(255, 255, 255)); 
 
+    if(!jogadores[0].morto) al_draw_filled_circle(jogadores[0].mov_jogador.x, jogadores[0].mov_jogador.y, r, al_map_rgb(255, 0, 0));
+    if(!jogadores[1].morto) al_draw_filled_circle(jogadores[1].mov_jogador.x, jogadores[1].mov_jogador.y, r, al_map_rgb(0, 0, 255));
 
-    al_draw_filled_circle(jogadores[0].mov_jogador.x, jogadores[0].mov_jogador.y, r, al_map_rgb(255, 0, 0));
-    al_draw_filled_circle(jogadores[1].mov_jogador.x, jogadores[1].mov_jogador.y, r, al_map_rgb(0, 0, 255));
-
+    // acabar o jogo
+    if (fim){
+      al_rest(3);
+      sair = true;
+    }
+    // morte
+    if (jogadores[0].morto && jogadores[1].morto){
+      al_draw_text(fonte, al_map_rgb(255, 0, 0), LARGURA_TELA/2, ALTURA_TELA/2-100, ALLEGRO_ALIGN_CENTRE, "VOCE PERDEU O JOGO");
+      fim = true;
+    }
     
     al_flip_display();
 
