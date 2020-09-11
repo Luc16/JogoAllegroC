@@ -1,212 +1,101 @@
-#include <allegro5/allegro.h>
-#include <allegro5/allegro_image.h>
-#include <allegro5/allegro_font.h>
-#include <allegro5/allegro_ttf.h>
- 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
- 
-const int LARGURA_TELA = 640;
-const int ALTURA_TELA = 480;
- 
-ALLEGRO_BITMAP *fundo = NULL;
-ALLEGRO_DISPLAY *janela = NULL;
-ALLEGRO_FONT *fonte = NULL;
-ALLEGRO_EVENT_QUEUE *fila_eventos = NULL;
- 
-char str[17];
- 
-void manipular_entrada(ALLEGRO_EVENT evento);
-void exibir_texto_centralizado();
- 
-bool inicializar();
-bool carregar_arquivos();
-void finalizar();
- 
+#include "jsmn/jsmn.h"
+#include <curl/curl.h>
+
+const int num_podio = 5;
+
+struct top_jogador{
+    int idx;
+    int pontos;
+    char nome[30];
+};
+
+struct string {
+  char *ptr;
+  size_t len;
+};
+
+void init_string(struct string *s) {
+  s->len = 0;
+  s->ptr = malloc(s->len+1);
+  if (s->ptr == NULL) {
+    fprintf(stderr, "malloc() failed\n");
+    exit(EXIT_FAILURE);
+  }
+  s->ptr[0] = '\0';
+}
+
+size_t writefunc(void *ptr, size_t size, size_t nmemb, struct string *s)
+{
+  size_t new_len = s->len + size*nmemb;
+  s->ptr = realloc(s->ptr, new_len+1);
+  if (s->ptr == NULL) {
+    fprintf(stderr, "realloc() failed\n");
+    exit(EXIT_FAILURE);
+  }
+  memcpy(s->ptr+s->len, ptr, size*nmemb);
+  s->ptr[new_len] = '\0';
+  s->len = new_len;
+
+  return size*nmemb;
+}
+
+int comparator (const struct top_jogador* lhs, const struct top_jogador* rhs){
+    return -(lhs->pontos - rhs->pontos);
+}
+
 int main(void)
 {
-  bool sair = false;
-  bool concluido = false;
- 
-  if (!inicializar())
-  {
-    return -1;
-  }
- 
-  strcpy(str, "");
- 
-  if (!carregar_arquivos())
-  {
-    return -1;
-  }
- 
-  while (!sair)
-  {
-    while (!al_is_event_queue_empty(fila_eventos))
-    {
-      ALLEGRO_EVENT evento;
-      al_wait_for_event(fila_eventos, &evento);
- 
-      if (!concluido)
-      {
-        manipular_entrada(evento);
- 
-        if (evento.type == ALLEGRO_EVENT_KEY_DOWN && evento.keyboard.keycode == ALLEGRO_KEY_ENTER)
-        {
-          concluido = true;
-        }
-      }
- 
-      if (evento.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
-      {
-        sair = true;
-      }
+  CURL *curl;
+  CURLcode res;
+  int num_parsed, i, j = 0, k;
+  struct top_jogador top[num_podio]; 
+  jsmn_parser parser;
+  jsmntok_t t[128];
+
+  jsmn_init(&parser);
+  curl = curl_easy_init();
+  if(curl) {
+    struct string s;
+    init_string(&s);
+
+    curl_easy_setopt(curl, CURLOPT_URL, "https://jogoallegro.firebaseio.com/podio.json");
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writefunc);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &s);
+    res = curl_easy_perform(curl);
+
+    num_parsed = jsmn_parse(&parser, s.ptr, s.len, t, sizeof(t) / sizeof(t[0]));
+
+    if (num_parsed < 0) {
+        printf("Failed to parse JSON: %d\n", num_parsed);
+        return 1;
     }
- 
-    al_draw_bitmap(fundo, 0, 0, 0);
- 
-    if (!concluido)
-    {
-      al_draw_text(fonte, al_map_rgb(255, 255, 255), LARGURA_TELA / 2,
-          (ALTURA_TELA / 2 - al_get_font_ascent(fonte)) / 2,
-          ALLEGRO_ALIGN_CENTRE, "Melhor Pontuação! Nome:");
+    for (i = 1; i < num_parsed; i+=2){
+        strncpy(top[j].nome, s.ptr+t[i].start, t[i].end - t[i].start);
+        top[j].nome[t[i].end - t[i].start] = '\0';
+
+        top[j].pontos = atoi(s.ptr + t[i+1].start);
+        j++;
     }
-    else
-    {
-      al_draw_text(fonte, al_map_rgb(255, 255, 255), LARGURA_TELA / 2,
-          (ALTURA_TELA / 2 - al_get_font_ascent(fonte)) / 2,
-          ALLEGRO_ALIGN_CENTRE, "1º Lugar");
+    qsort(top, num_podio, sizeof top[0], comparator);
+
+    for (i = 0; i < num_podio; i++){
+        printf("O(A) jogador(a) %s ficou em %do lugar, com %d pontos\n", top[i].nome, i+1, top[i].pontos);
     }
- 
-    exibir_texto_centralizado();
- 
-    al_flip_display();
+
+    curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "PUT"); /* !!! */
+    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "{ \"Luc\": 120, \"Gil\": 110, \"Ana\": 130, \"Mariana\": 125, \"Ian\": 100 }");
+    res = curl_easy_perform(curl);
+
+    // curl -X PUT -d '{ "Luc": 120, "Gil": 100, "Ana": 130, "Mariana": 125, "Ian": 80 }' 'https://jogoallegro.firebaseio.com/podio.json'
+    // curl -X POST -d '{"Luc" : 120}' \https://jogoallegro.firebaseio.com/podio.json
+    // curl -X DELETE "https://jogoallegro.firebaseio.com/podio/-MGVlHge_5-XN3vOBuLv.json"
+    free(s.ptr);
+
+    /* always cleanup */
+    curl_easy_cleanup(curl);
   }
- 
-  finalizar();
- 
   return 0;
-}
- 
-bool inicializar()
-{
-  if (!al_init())
-  {
-    fprintf(stderr, "Falha ao inicializar a biblioteca Allegro.\n");
-    return false;
-  }
- 
-  if (!al_install_keyboard())
-  {
-    fprintf(stderr, "Falha ao inicializar teclado.\n");
-    return false;
-  }
- 
-  if (!al_init_image_addon())
-  {
-    fprintf(stderr, "Falha ao inicializar allegro_image.\n");
-    return false;
-  }
- 
-  al_init_font_addon();
- 
-  if (!al_init_ttf_addon())
-  {
-    fprintf(stderr, "Falha ao inicializar allegro_ttf.\n");
-    return false;
-  }
- 
-  janela = al_create_display(LARGURA_TELA, ALTURA_TELA);
-  if (!janela)
-  {
-    fprintf(stderr, "Falha ao criar a janela.\n");
-    return false;
-  }
- 
-  fila_eventos = al_create_event_queue();
-  if (!fila_eventos)
-  {
-    fprintf(stderr, "Falha ao criar fila de eventos.\n");
-    return false;
-  }
- 
-  al_set_window_title(janela, "Entrada de Texto");
- 
-  al_register_event_source(fila_eventos, al_get_display_event_source(janela));
-  al_register_event_source(fila_eventos, al_get_keyboard_event_source());
- 
-  return true;
-}
- 
-bool carregar_arquivos()
-{
-  fundo = al_load_bitmap("Images/bk_main.png");
-  if (!fundo)
-  {
-    fprintf(stderr, "Falha ao carregar \"bg.jpg\".\n");
-    return false;
-  }
- 
-  fonte = al_load_font("Roboto-Regular.ttf", 42, 0);
-  if (!fonte)
-  {
-    fprintf(stderr, "Falha ao carregar \"comic.ttf\".\n");
-    return false;
-  }
- 
-  return true;
-}
- 
-void finalizar()
-{
-  al_destroy_bitmap(fundo);
-  al_destroy_font(fonte);
-  al_destroy_event_queue(fila_eventos);
-  al_destroy_display(janela);
-}
- 
-void manipular_entrada(ALLEGRO_EVENT evento)
-{
-  if (evento.type == ALLEGRO_EVENT_KEY_CHAR)
-  {
-    if (strlen(str) <= 16)
-    {
-      char temp[] = {evento.keyboard.unichar, '\0'};
-      if (evento.keyboard.unichar == ' ')
-      {
-        strcat(str, temp);
-      }
-      else if (evento.keyboard.unichar >= '0' &&
-          evento.keyboard.unichar <= '9')
-      {
-        strcat(str, temp);
-      }
-      else if (evento.keyboard.unichar >= 'A' &&
-          evento.keyboard.unichar <= 'Z')
-      {
-        strcat(str, temp);
-      }
-      else if (evento.keyboard.unichar >= 'a' &&
-          evento.keyboard.unichar <= 'z')
-      {
-        strcat(str, temp);
-      }
-    }
- 
-    if (evento.keyboard.keycode == ALLEGRO_KEY_BACKSPACE && strlen(str) != 0)
-    {
-      str[strlen(str) - 1] = '\0';
-    }
-  }
-}
- 
-void exibir_texto_centralizado()
-{
-  if (strlen(str) > 0)
-  {
-    al_draw_text(fonte, al_map_rgb(255, 255, 255), LARGURA_TELA / 2,
-        (ALTURA_TELA - al_get_font_ascent(fonte)) / 2,
-        ALLEGRO_ALIGN_CENTRE, str);
-  }
 }
