@@ -52,7 +52,7 @@ int main(void)
       {
         manipular_entrada(evento);
  
-        if (evento.type == ALLEGRO_EVENT_KEY_DOWN && evento.keyboard.keycode == ALLEGRO_KEY_ENTER)
+        
         {
           concluido = true;
         }
