@@ -5,6 +5,7 @@
 #include <allegro5/allegro_primitives.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <math.h>
 #include <string.h>
 
 // undef MOSTRAR_HITBOX
@@ -25,17 +26,24 @@ ALLEGRO_TIMER *temporizador = NULL;
 char *plano_de_fundo = "Images/bk_main.png";
 
 // estrutura de movimento dos personagens
-struct movimento {
-  float x, y, x_anterior, y_anterior;
-};
+typedef struct Struct_Posicao {
+  float x, y, x_anterior, y_anterior, altura, largura, col_altura, col_largura;
+} Posicao;
 
 // estrutura dos jogadores
-struct jogador {
-  struct movimento mov_jogador;
+typedef struct Struct_Jogador {
+  Posicao pos_jogador;
   bool pulando, chao, mov_direita, mov_esquerda, morto;
   float posicao_y0, ajuste_pos; 
   int i_cair, i_pulo, lado;
-};
+} Jogador;
+
+//estrutura corona
+typedef struct Struct_Corona {
+  Posicao pos_corona;
+  bool morto;
+  int velocidade;
+} Corona;
 
 // Função de inicialização
 bool inicializar(){
@@ -108,54 +116,64 @@ bool inicializar(){
 }
 
 // colisões
-bool colidindo(float x_esquerda, float x_direita, float y_cima, float y_baixo, struct jogador *jog, int raio){
-    return jog->mov_jogador.y - raio < y_baixo &&
-     jog->mov_jogador.y + raio > y_cima &&
-      jog->mov_jogador.x + raio > x_esquerda &&
-       jog->mov_jogador.x - raio < x_direita;
+bool jog_colidindo(float x_esquerda, float x_direita, float y_cima, float y_baixo, Jogador *jog){
+    return jog->pos_jogador.y - jog->pos_jogador.altura < y_baixo &&
+     jog->pos_jogador.y + jog->pos_jogador.altura > y_cima &&
+      jog->pos_jogador.x + jog->pos_jogador.largura > x_esquerda &&
+       jog->pos_jogador.x - jog->pos_jogador.largura < x_direita;
 }
 
-void colisao_lateral(struct jogador *jog, float x_esquerda, float x_direita, int raio){
-    if (jog->mov_jogador.x_anterior + raio <= x_esquerda)
-      jog->mov_jogador.x = x_esquerda - 0.001 - raio; 
-    else if (jog->mov_jogador.x_anterior - raio >= x_direita)
-      jog->mov_jogador.x = x_direita + 0.001 + raio;
+void jog_colisao_lateral(Jogador *jog, float x_esquerda, float x_direita){
+  if (jog->pos_jogador.x_anterior + jog->pos_jogador.largura <= x_esquerda)
+    jog->pos_jogador.x = x_esquerda - 0.001 - jog->pos_jogador.largura; 
+  else if (jog->pos_jogador.x_anterior - jog->pos_jogador.largura >= x_direita)
+    jog->pos_jogador.x = x_direita + 0.001 + jog->pos_jogador.largura;
 }
 
-void colisao_teto(struct jogador *jog, float y_baixo, int raio){
-    if (jog->mov_jogador.y_anterior - raio > y_baixo) {
-      jog->mov_jogador.y = y_baixo + 0.001 + raio;
-      jog->posicao_y0 = jog->mov_jogador.y;
-      jog->i_cair = 0;
+void jog_colisao_teto(Jogador *jog, float y_baixo){
+  if (jog->pos_jogador.y_anterior - jog->pos_jogador.altura > y_baixo) {
+    jog->pos_jogador.y = y_baixo + 0.001 + jog->pos_jogador.altura;
+    jog->posicao_y0 = jog->pos_jogador.y;
+    jog->i_cair = 0;
+    jog->pulando = false;
+  }
+}
+
+void jog_colisao_chao(Jogador *jog, float y_cima){
+  if (jog->pos_jogador.y_anterior + jog->pos_jogador.altura < y_cima){
+    jog->pos_jogador.y = y_cima - 0.001 - jog->pos_jogador.altura;
+    jog->i_cair = 0;
+    if(jog->chao == false){
+      jog->posicao_y0 = jog->pos_jogador.y;
+      jog->chao = true;
       jog->pulando = false;
     }
+  }
 }
 
-void colisao_chao(struct jogador *jog, float y_cima, int raio){
-    if (jog->mov_jogador.y_anterior + raio < y_cima){
-      jog->mov_jogador.y = y_cima - 0.001 - raio;
-      jog->i_cair = 0;
-      if(jog->chao == false){
-        jog->posicao_y0 = jog->mov_jogador.y;
-        jog->chao = true;
-        jog->pulando = false;
-      }
-    }
-}
-
-void colisao_geral(float x_esquerda, float x_direita, float y_cima, float y_baixo, struct jogador *jog, int raio){
-    if (colidindo(x_esquerda, x_direita, y_cima, y_baixo, jog, raio)){
-        colisao_lateral(jog, x_esquerda, x_direita, raio);
-        colisao_teto(jog, y_baixo, raio);
-        colisao_chao(jog, y_cima, raio);
+void jog_colisao_geral(float x_esquerda, float x_direita, float y_cima, float y_baixo, Jogador *jog){
+  if (!(x_esquerda > LARGURA_TELA || x_direita < 0)){
+    if (jog_colidindo(x_esquerda, x_direita, y_cima, y_baixo, jog)){
+      jog_colisao_lateral(jog, x_esquerda, x_direita);
+      jog_colisao_teto(jog, y_baixo);
+      jog_colisao_chao(jog, y_cima);
     }
     #ifdef MOSTRAR_HITBOX
       al_draw_filled_rectangle(x_esquerda, y_cima, x_direita, y_baixo, al_map_rgb(255, 255, 0));
     #endif
+  }
 }
 
-void colisao_mortal(float x_esquerda, float x_direita, float y_cima, float y_baixo, struct jogador *jog, int raio){
-  if (colidindo(x_esquerda, x_direita, y_cima, y_baixo, jog, raio)){
+// colisões mortais
+bool jog_colidindo_mortal(float x_esquerda, float x_direita, float y_cima, float y_baixo, Jogador *jog){
+    return jog->pos_jogador.y - jog->pos_jogador.col_altura < y_baixo &&
+     jog->pos_jogador.y + jog->pos_jogador.col_altura > y_cima &&
+      jog->pos_jogador.x + jog->pos_jogador.col_largura > x_esquerda &&
+       jog->pos_jogador.x - jog->pos_jogador.col_largura < x_direita;
+}
+
+void jog_colisao_mortal(float x_esquerda, float x_direita, float y_cima, float y_baixo, Jogador *jog){
+  if (jog_colidindo_mortal(x_esquerda, x_direita, y_cima, y_baixo, jog)){
     jog->morto = true;
   }
   #ifdef MOSTRAR_HITBOX
@@ -164,162 +182,276 @@ void colisao_mortal(float x_esquerda, float x_direita, float y_cima, float y_bai
 }
 
 // movimentos
-void ativar_pulo(struct jogador *jog){
+void jog_ativar_pulo(Jogador *jog){
   jog->chao = false;
   jog->pulando = true;
   jog->i_pulo = 0;
-  jog->posicao_y0 = jog->mov_jogador.y; 
+  jog->posicao_y0 = jog->pos_jogador.y; 
 }
 
-void mover_esquerda(struct jogador *jog, int _lado){
+void jog_mover_esquerda(Jogador *jog, int _lado){
   jog->mov_esquerda = true; 
   jog->lado = _lado;
 }
 
-void mover_direita(struct jogador *jog, int _lado){
+void jog_mover_direita(Jogador *jog, int _lado){
   jog->mov_direita = true; 
   jog->lado = _lado;
 }
 
-void mover_lado(struct jogador *jog){
-  jog->mov_jogador.x += jog->lado*4;
+void jog_mover_lado(Jogador *jog){
+  jog->pos_jogador.x += jog->lado*4;
 }
 
-void pular(struct jogador *jog){ 
-  jog->mov_jogador.y = jog->posicao_y0 + 400*jog->i_pulo*jog->i_pulo/3600.0 - 600*jog->i_pulo/60.0;
+void jog_pular(Jogador *jog){ 
+  jog->pos_jogador.y = jog->posicao_y0 + 400*jog->i_pulo*jog->i_pulo/3600.0 - 600*jog->i_pulo/60.0;
   jog->i_pulo++;
 }
 
-void cair(struct jogador *jog){
+void jog_cair(Jogador *jog){
   jog->chao = false;
-  jog->mov_jogador.y = jog->posicao_y0 + 400*jog->i_cair*jog->i_cair/3600.0;
+  jog->pos_jogador.y = jog->posicao_y0 + 400*jog->i_cair*jog->i_cair/3600.0;
 }
 
-bool esta_no_limite_direita(struct jogador *jog){
-  return jog->mov_jogador.x >= LARGURA_TELA*3/4;
+// movimento de tela
+bool jog_esta_no_limite_direita(Jogador *jog){
+  return jog->pos_jogador.x >= LARGURA_TELA*3/4;
 }
 
-bool esta_no_limite_esquerda(struct jogador *jog){
-  return jog->mov_jogador.x <= LARGURA_TELA*1/10;
+bool jog_esta_no_limite_esquerda(Jogador *jog){
+  return jog->pos_jogador.x <= LARGURA_TELA*1/10;
 }
 
-void mover_tela_direita(float *mov_tela, struct jogador *jog_limite, struct jogador *jog_outro){
-  jog_limite->ajuste_pos = jog_limite->mov_jogador.x - LARGURA_TELA*3/4;
+void mover_tela_direita(float *mov_tela, Jogador *jog_limite, Jogador *jog_outro, Corona *cov){
+  jog_limite->ajuste_pos = jog_limite->pos_jogador.x - LARGURA_TELA*3/4;
   *mov_tela += jog_limite->ajuste_pos;
-  jog_limite->mov_jogador.x = LARGURA_TELA*3/4;
-  jog_outro->mov_jogador.x -= jog_limite->ajuste_pos;
-  if (esta_no_limite_esquerda(jog_outro))
-    jog_outro->mov_jogador.x = LARGURA_TELA*1/10;
+  jog_limite->pos_jogador.x = LARGURA_TELA*3/4;
+  jog_outro->pos_jogador.x -= jog_limite->ajuste_pos;
+  cov->pos_corona.x -= jog_limite->ajuste_pos;
+  if (jog_esta_no_limite_esquerda(jog_outro))
+    jog_outro->pos_jogador.x = LARGURA_TELA*1/10;
 }
 
-void mover_tela_esquerda(float *mov_tela, struct jogador *jog_limite, struct jogador *jog_outro){
-  jog_limite->ajuste_pos = LARGURA_TELA*1/10 - jog_limite->mov_jogador.x;
+void mover_tela_esquerda(float *mov_tela, Jogador *jog_limite, Jogador *jog_outro, Corona *cov){
+  jog_limite->ajuste_pos = LARGURA_TELA*1/10 - jog_limite->pos_jogador.x;
   *mov_tela -= jog_limite->ajuste_pos;
-  jog_limite->mov_jogador.x = LARGURA_TELA*1/10;
-  jog_outro->mov_jogador.x += jog_limite->ajuste_pos;
+  jog_limite->pos_jogador.x = LARGURA_TELA*1/10;
+  jog_outro->pos_jogador.x += jog_limite->ajuste_pos;
+  cov->pos_corona.x += jog_limite->ajuste_pos;
 }
 
-// lidar com botoes
-void apertar_botao(ALLEGRO_EVENT evento, struct jogador *jog){
+void mover_tela(Jogador jogs[], Corona *cov, float *mov_tela){
+  if (jog_esta_no_limite_direita(&jogs[0]) && jogs[0].pos_jogador.x > jogs[1].pos_jogador.x){
+    mover_tela_direita(mov_tela, &jogs[0], &jogs[1], cov);
+  }
+  else if (jog_esta_no_limite_direita(&jogs[1])){
+    mover_tela_direita(mov_tela, &jogs[1], &jogs[0], cov);
+  }  
+  else if (jog_esta_no_limite_esquerda(&jogs[0]) && jogs[0].pos_jogador.x < jogs[1].pos_jogador.x){
+    mover_tela_esquerda(mov_tela, &jogs[0], &jogs[1], cov);
+  }
+  else if (jog_esta_no_limite_esquerda(&jogs[1])){
+    mover_tela_esquerda(mov_tela, &jogs[1], &jogs[0], cov);
+  }
+}
+
+// atualizar dados jogador
+void jog_iniciar(Jogador jogs[]){
+  int i_jog;
+  for (i_jog = 0; i_jog < numero_de_jogadores; i_jog++){
+    jogs[i_jog].pos_jogador.x = LARGURA_TELA/2;
+    jogs[i_jog].pos_jogador.x_anterior = LARGURA_TELA/2;
+    jogs[i_jog].pos_jogador.y = 0;
+    jogs[i_jog].pos_jogador.y_anterior = 0;
+    jogs[i_jog].pos_jogador.altura = 20;
+    jogs[i_jog].pos_jogador.largura = 20;
+    jogs[i_jog].pos_jogador.col_altura = 15;
+    jogs[i_jog].pos_jogador.col_largura = 15;
+    jogs[i_jog].chao = false;
+    jogs[i_jog].pulando = false;
+    jogs[i_jog].mov_esquerda = false; 
+    jogs[i_jog].mov_direita = false; 
+    jogs[i_jog].morto = false;
+    jogs[i_jog].posicao_y0 = 0; 
+    jogs[i_jog].lado = 0;
+    jogs[i_jog].i_cair = 0;
+    jogs[i_jog].i_pulo = 0;
+  }
+}
+
+void jog_atualizar_pos_anterior(Jogador jogs[]){
+  int i_jog;
+  for (i_jog = 0; i_jog < numero_de_jogadores; i_jog++){
+    jogs[i_jog].pos_jogador.x_anterior = jogs[i_jog].pos_jogador.x;
+    jogs[i_jog].pos_jogador.y_anterior = jogs[i_jog].pos_jogador.y;
+  }
+}
+
+void jog_atualizar_geral(Jogador jogs[], float mov_tela){
+  int i_jog;
+  for (i_jog = 0; i_jog < numero_de_jogadores; i_jog++){
+    jogs[i_jog].ajuste_pos = 0;
+
+    if (!jogs[i_jog].morto){
+      //pular e cair
+      if (jogs[i_jog].pulando){
+        jog_pular(&jogs[i_jog]);    
+      } else {
+        jog_cair(&jogs[i_jog]);
+      }
+      // movimento lateral
+      if (jogs[i_jog].mov_direita || jogs[i_jog].mov_esquerda){
+        jog_mover_lado(&jogs[i_jog]);
+      }
+      // chão 
+      jog_colisao_geral(0-mov_tela, 10000-mov_tela, 690, ALTURA_TELA, &jogs[i_jog]);
+      // baixo esquerda cima
+      jog_colisao_geral(1100-mov_tela, LARGURA_TELA-mov_tela, 380, 420, &jogs[i_jog]);
+      // baixo esquerda baixo
+      jog_colisao_geral(800-mov_tela, 1050-mov_tela, 520, 560, &jogs[i_jog]);
+      // baixo direita cima
+      jog_colisao_geral(1750-mov_tela, 2000-mov_tela, 380, 420, &jogs[i_jog]);
+      // baixo direta baixo
+      jog_colisao_geral(1450-mov_tela, 1700-mov_tela, 520, 560, &jogs[i_jog]);
+      //linha que mata
+      jog_colisao_mortal(380-mov_tela, 420-mov_tela, 600, 690, &jogs[i_jog]);
+
+      if (jogs[i_jog].pos_jogador.y >= ALTURA_TELA + 1000) jogs[i_jog].morto = true;
+      jogs[i_jog].i_cair++;
+    } else {
+      jogs[i_jog].pos_jogador.x = LARGURA_TELA/2;
+    }
+  }
+}
+
+// funções corona
+void corona_iniciar(Corona *cov){
+  cov->pos_corona.altura = 40;
+  cov->pos_corona.largura = 40;
+  cov->pos_corona.col_altura = 35;
+  cov->pos_corona.col_largura = 35;
+  cov->pos_corona.x = 0;
+  cov->pos_corona.y = 0;
+  cov->pos_corona.x_anterior = 0;
+  cov->pos_corona.y_anterior = 0;
+  cov->morto = false;
+  cov->velocidade = 2;
+}
+
+void corona_movimento(Corona *cov, Jogador jogs[]){
+  int i;
+  float distancia = MAXFLOAT, dx, dy;
+  for (i = 0; i < numero_de_jogadores; i++){
+    if (!jogs[i].morto){
+      float dxi = jogs[i].pos_jogador.x - cov->pos_corona.x;
+      float dyi = jogs[i].pos_jogador.y - cov->pos_corona.y;
+      float di = sqrt(pow(dxi, 2) + pow(dyi, 2));
+      if(di < distancia){
+        distancia = di;
+        dx = dxi;
+        dy = dyi;
+      }
+    }
+  }
+  float proporcao = 1.0 - (distancia - cov->velocidade)/distancia;
+  cov->pos_corona.x += dx*proporcao;
+  cov->pos_corona.y += dy*proporcao;
+}
+
+void corona_atualizar(Corona *cov, Jogador jogs[]){
+  if(!cov->morto){
+    corona_movimento(cov, jogs);
+  }
+} 
+
+void corona_colide(Corona *cov, Jogador jogs[]){
+  int i;
+  for(i = 0; i < numero_de_jogadores; i++){
+    if (!jogs[i].morto){
+      if (jogs[i].pos_jogador.y - jogs[i].pos_jogador.col_altura < cov->pos_corona.y + cov->pos_corona.col_altura &&
+        jogs[i].pos_jogador.y + jogs[i].pos_jogador.col_altura > cov->pos_corona.y - cov->pos_corona.col_altura &&
+          jogs[i].pos_jogador.x + jogs[i].pos_jogador.col_largura > cov->pos_corona.x - cov->pos_corona.col_largura &&
+          jogs[i].pos_jogador.x - jogs[i].pos_jogador.col_largura < cov->pos_corona.x + cov->pos_corona.col_largura){
+      
+      jogs[i].morto = true;
+      cov->morto = true;
+      }
+    }
+  }
+}
+
+// lidar com botões
+void apertar_botao(ALLEGRO_EVENT evento, Jogador jogs[]){
   switch (evento.keyboard.keycode){
     case ALLEGRO_KEY_UP:
-      if (jog[0].chao){
-        ativar_pulo(&jog[0]);
+      if (jogs[0].chao){
+        jog_ativar_pulo(&jogs[0]);
       }
       break;
     case ALLEGRO_KEY_DOWN:
-      jog[0].mov_jogador.y += 20;
+      jogs[0].pos_jogador.y += 20;
       break;
     case ALLEGRO_KEY_LEFT:
-      mover_esquerda(&jog[0], -1);
+      jog_mover_esquerda(&jogs[0], -1);
       break; 
     case ALLEGRO_KEY_RIGHT:
-      mover_direita(&jog[0], 1);
+      jog_mover_direita(&jogs[0], 1);
       break;
     case ALLEGRO_KEY_W:
-      if (jog[1].chao){
-        ativar_pulo(&jog[1]);
+      if (jogs[1].chao){
+        jog_ativar_pulo(&jogs[1]);
       }
       break;
     case ALLEGRO_KEY_S:
-      jog[1].mov_jogador.y += 20;
+      jogs[1].pos_jogador.y += 20;
       break;
     case ALLEGRO_KEY_A:
-      mover_esquerda(&jog[1], -1);
+      jog_mover_esquerda(&jogs[1], -1);
       break; 
     case ALLEGRO_KEY_D:
-      mover_direita(&jog[1], 1);
+      jog_mover_direita(&jogs[1], 1);
       break;
   }
 }
 
-void soltar_botao(ALLEGRO_EVENT evento, struct jogador *jog){
+void soltar_botao(ALLEGRO_EVENT evento, Jogador jogs[]){
   switch (evento.keyboard.keycode){
     case ALLEGRO_KEY_RIGHT:
-      jog[0].mov_direita = false;
+      jogs[0].mov_direita = false;
       break;
     case ALLEGRO_KEY_LEFT:
-      jog[0].mov_esquerda = false;
+      jogs[0].mov_esquerda = false;
       break;
     case ALLEGRO_KEY_D:
-      jog[1].mov_direita = false;
+      jogs[1].mov_direita = false;
       break;
     case ALLEGRO_KEY_A:
-      jog[1].mov_esquerda = false;
+      jogs[1].mov_esquerda = false;
       break;
   }
 }
 
 int main(){
-  struct jogador jogadores[numero_de_jogadores];
+  Jogador jogadores[numero_de_jogadores];
+  Corona covid;
   bool sair = false, fim = false, ajuste_e_desenho = false;
-  int r = 20, i_jog;
+  int r = 20;
   float mov_tela = 0; 
 
   // inicializando os jogadores
-  for (i_jog = 0; i_jog < numero_de_jogadores; i_jog++){
-    jogadores[i_jog].mov_jogador.x = LARGURA_TELA/2;
-    jogadores[i_jog].mov_jogador.x_anterior = LARGURA_TELA/2;
-    jogadores[i_jog].mov_jogador.y = 0;
-    jogadores[i_jog].mov_jogador.y_anterior = 0;
-    jogadores[i_jog].chao = false;
-    jogadores[i_jog].pulando = false;
-    jogadores[i_jog].mov_esquerda = false; 
-    jogadores[i_jog].mov_direita = false; 
-    jogadores[i_jog].morto = false;
-    jogadores[i_jog].posicao_y0 = 0; 
-    jogadores[i_jog].lado = 0;
-    jogadores[i_jog].i_cair = 0;
-    jogadores[i_jog].i_pulo = 0;
-  }
+  jog_iniciar(jogadores);
+  corona_iniciar(&covid);
 
   if (!inicializar()) return -1;
 
   al_draw_bitmap(fundo, 0, 0, 0);
 
   while (!sair){  
-    // tempo_inicial = al_get_time();
     al_wait_for_event(fila_eventos, &evento);
 
     if (evento.type == ALLEGRO_EVENT_TIMER){
-      //movimentos da tela
-      if (esta_no_limite_direita(&jogadores[0]) && jogadores[0].mov_jogador.x > jogadores[1].mov_jogador.x){
-        mover_tela_direita(&mov_tela, &jogadores[0], &jogadores[1]);
-      }
-      else if (esta_no_limite_direita(&jogadores[1])){
-        mover_tela_direita(&mov_tela, &jogadores[1], &jogadores[0]);
-      }  
-      else if (esta_no_limite_esquerda(&jogadores[0]) && jogadores[0].mov_jogador.x < jogadores[1].mov_jogador.x){
-        mover_tela_esquerda(&mov_tela, &jogadores[0], &jogadores[1]);
-      }
-      else if (esta_no_limite_esquerda(&jogadores[1])){
-        mover_tela_esquerda(&mov_tela, &jogadores[1], &jogadores[0]);
-      }
-
-      for (i_jog = 0; i_jog < numero_de_jogadores; i_jog++){
-        jogadores[i_jog].mov_jogador.x_anterior = jogadores[i_jog].mov_jogador.x;
-        jogadores[i_jog].mov_jogador.y_anterior = jogadores[i_jog].mov_jogador.y;
-      }
+      mover_tela(jogadores, &covid, &mov_tela);      
+      jog_atualizar_pos_anterior(jogadores);
       ajuste_e_desenho = true;
     }
 
@@ -337,42 +469,13 @@ int main(){
       al_clear_to_color(al_map_rgb(0, 0, 0));
       al_draw_bitmap(fundo, 0-mov_tela, 0, 0);
 
-      for (i_jog = 0; i_jog < numero_de_jogadores; i_jog++){
-        jogadores[i_jog].ajuste_pos = 0;
+      jog_atualizar_geral(jogadores, mov_tela);
+      corona_atualizar(&covid, jogadores);
+      corona_colide(&covid, jogadores);
 
-        if (!jogadores[i_jog].morto){
-          //pular e cair
-          if (jogadores[i_jog].pulando){
-            pular(&jogadores[i_jog]);    
-          } else {
-            cair(&jogadores[i_jog]);
-          }
-          // movimento lateral
-          if (jogadores[i_jog].mov_direita || jogadores[i_jog].mov_esquerda){
-            mover_lado(&jogadores[i_jog]);
-          }
-          // chão 
-          colisao_geral(0-mov_tela, 10000-mov_tela, 690, ALTURA_TELA, &jogadores[i_jog], r);
-          // baixo esquerda cima
-          colisao_geral(1100-mov_tela, LARGURA_TELA-mov_tela, 380, 420, &jogadores[i_jog], r);
-          // baixo esquerda baixo
-          colisao_geral(800-mov_tela, 1050-mov_tela, 520, 560, &jogadores[i_jog], r);
-          // baixo direita cima
-          colisao_geral(1750-mov_tela, 2000-mov_tela, 380, 420, &jogadores[i_jog], r);
-          // baixo direta baixo
-          colisao_geral(1450-mov_tela, 1700-mov_tela, 520, 560, &jogadores[i_jog], r);
-          //linha que mata
-          colisao_mortal(380-mov_tela, 420-mov_tela, 600, 690, &jogadores[i_jog], r);
-
-          if (jogadores[i_jog].mov_jogador.y >= ALTURA_TELA + 1000) jogadores[i_jog].morto = true;
-          jogadores[i_jog].i_cair++;
-        } else {
-          jogadores[i_jog].mov_jogador.x = LARGURA_TELA/2;
-        }
-      }
-
-      if(!jogadores[0].morto) al_draw_filled_circle(jogadores[0].mov_jogador.x, jogadores[0].mov_jogador.y, r, al_map_rgb(255, 0, 0));
-      if(!jogadores[1].morto) al_draw_filled_circle(jogadores[1].mov_jogador.x, jogadores[1].mov_jogador.y, r, al_map_rgb(0, 0, 255));
+      if(!jogadores[0].morto) al_draw_filled_circle(jogadores[0].pos_jogador.x, jogadores[0].pos_jogador.y, r, al_map_rgb(255, 0, 0));
+      if(!jogadores[1].morto) al_draw_filled_circle(jogadores[1].pos_jogador.x, jogadores[1].pos_jogador.y, r, al_map_rgb(0, 0, 255));
+      if(!covid.morto) al_draw_filled_circle(covid.pos_corona.x, covid.pos_corona.y, covid.pos_corona.altura, al_map_rgb(255, 255, 255));
 
       // acabar o jogo
       if (fim){
@@ -391,6 +494,7 @@ int main(){
 
   al_destroy_font(fonte);
   al_destroy_display(janela);
+  al_destroy_timer(temporizador);
   al_destroy_event_queue(fila_eventos);
  
   return 0;

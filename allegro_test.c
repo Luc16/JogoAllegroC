@@ -1,212 +1,143 @@
-#include <allegro5/allegro.h>
-#include <allegro5/allegro_image.h>
-#include <allegro5/allegro_font.h>
-#include <allegro5/allegro_ttf.h>
- 
 #include <stdio.h>
-#include <string.h>
-#include <stdbool.h>
- 
-const int LARGURA_TELA = 640;
-const int ALTURA_TELA = 480;
- 
-ALLEGRO_BITMAP *fundo = NULL;
-ALLEGRO_DISPLAY *janela = NULL;
-ALLEGRO_FONT *fonte = NULL;
-ALLEGRO_EVENT_QUEUE *fila_eventos = NULL;
- 
-char str[17];
- 
-void manipular_entrada(ALLEGRO_EVENT evento);
-void exibir_texto_centralizado();
- 
-bool inicializar();
-bool carregar_arquivos();
-void finalizar();
- 
+#include <allegro5/allegro.h>
+#include <allegro5/allegro_primitives.h>
+#include <allegro5/allegro_image.h>
+#include <allegro5/allegro_native_dialog.h>
+
+enum KEYS{ UP, DOWN, LEFT, RIGHT};
+
 int main(void)
 {
-  bool sair = false;
-  bool concluido = false;
- 
-  if (!inicializar())
-  {
-    return -1;
-  }
- 
-  strcpy(str, "");
- 
-  if (!carregar_arquivos())
-  {
-    return -1;
-  }
- 
-  while (!sair)
-  {
-    while (!al_is_event_queue_empty(fila_eventos))
-    {
-      ALLEGRO_EVENT evento;
-      al_wait_for_event(fila_eventos, &evento);
- 
-      if (!concluido)
-      {
-        manipular_entrada(evento);
- 
-        
-        {
-          concluido = true;
+int width = 640;
+int height = 480;
+    char local[500];
+int i;
+
+
+bool done = false;
+int pos_x = width / 2;
+int pos_y = height / 2;
+
+const int maxFrame = 12;
+int curFrame = 0;
+int frameCount = 0;
+    int frameDelay = 5;
+
+bool keys[4] = {false, false, false, false};
+
+    ALLEGRO_DISPLAY *display = NULL;
+ALLEGRO_EVENT_QUEUE *event_queue = NULL;
+ALLEGRO_TIMER *timer;
+ALLEGRO_BITMAP *pato[maxFrame];
+
+if(!al_init()) //initialize Allegro
+return -1;
+
+display = al_create_display(width, height); //create our display object
+
+if(!display) //test display object
+return -1;
+
+al_init_primitives_addon();
+al_install_keyboard();
+
+// for(i=0; i<maxFrame; i++){
+
+        sprintf(local, "Images/pato/pato_idle/pato_idle-%d.png.png", i+1);
+        pato[0] = al_load_bitmap("Images/pato/pato_idle/pato_idle-%d.png.png");
+        if (!pato[0]){
+          printf("erro com o pato");
         }
-      }
- 
-      if (evento.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
-      {
-        sair = true;
-      }
-    }
- 
-    al_draw_bitmap(fundo, 0, 0, 0);
- 
-    if (!concluido)
-    {
-      al_draw_text(fonte, al_map_rgb(255, 255, 255), LARGURA_TELA / 2,
-          (ALTURA_TELA / 2 - al_get_font_ascent(fonte)) / 2,
-          ALLEGRO_ALIGN_CENTRE, "Melhor Pontuação! Nome:");
-    }
-    else
-    {
-      al_draw_text(fonte, al_map_rgb(255, 255, 255), LARGURA_TELA / 2,
-          (ALTURA_TELA / 2 - al_get_font_ascent(fonte)) / 2,
-          ALLEGRO_ALIGN_CENTRE, "1º Lugar");
-    }
- 
-    exibir_texto_centralizado();
- 
-    al_flip_display();
-  }
- 
-  finalizar();
- 
-  return 0;
-}
- 
-bool inicializar()
+
+// }
+// for(i=0; i<maxFrame; i++){
+//         al_convert_mask_to_alpha(pato[i], al_map_rgb(255, 255, 255));
+// }
+
+event_queue = al_create_event_queue();
+timer = al_create_timer(1.0/60);
+
+    al_register_event_source(event_queue, al_get_timer_event_source(timer));
+al_register_event_source(event_queue, al_get_keyboard_event_source());
+al_register_event_source(event_queue, al_get_display_event_source(display));
+
+while(!done)
 {
-  if (!al_init())
-  {
-    fprintf(stderr, "Falha ao inicializar a biblioteca Allegro.\n");
-    return false;
-  }
- 
-  if (!al_install_keyboard())
-  {
-    fprintf(stderr, "Falha ao inicializar teclado.\n");
-    return false;
-  }
- 
-  if (!al_init_image_addon())
-  {
-    fprintf(stderr, "Falha ao inicializar allegro_image.\n");
-    return false;
-  }
- 
-  al_init_font_addon();
- 
-  if (!al_init_ttf_addon())
-  {
-    fprintf(stderr, "Falha ao inicializar allegro_ttf.\n");
-    return false;
-  }
- 
-  janela = al_create_display(LARGURA_TELA, ALTURA_TELA);
-  if (!janela)
-  {
-    fprintf(stderr, "Falha ao criar a janela.\n");
-    return false;
-  }
- 
-  fila_eventos = al_create_event_queue();
-  if (!fila_eventos)
-  {
-    fprintf(stderr, "Falha ao criar fila de eventos.\n");
-    return false;
-  }
- 
-  al_set_window_title(janela, "Entrada de Texto");
- 
-  al_register_event_source(fila_eventos, al_get_display_event_source(janela));
-  al_register_event_source(fila_eventos, al_get_keyboard_event_source());
- 
-  return true;
-}
- 
-bool carregar_arquivos()
+ALLEGRO_EVENT ev;
+al_wait_for_event(event_queue, &ev);
+
+if(ev.type == ALLEGRO_EVENT_KEY_DOWN)
 {
-  fundo = al_load_bitmap("Images/bk_main.png");
-  if (!fundo)
-  {
-    fprintf(stderr, "Falha ao carregar \"bg.jpg\".\n");
-    return false;
-  }
- 
-  fonte = al_load_font("Roboto-Regular.ttf", 42, 0);
-  if (!fonte)
-  {
-    fprintf(stderr, "Falha ao carregar \"comic.ttf\".\n");
-    return false;
-  }
- 
-  return true;
-}
- 
-void finalizar()
+switch(ev.keyboard.keycode)
 {
-  al_destroy_bitmap(fundo);
-  al_destroy_font(fonte);
-  al_destroy_event_queue(fila_eventos);
-  al_destroy_display(janela);
+case ALLEGRO_KEY_UP:
+keys[UP] = true;
+break;
+case ALLEGRO_KEY_DOWN:
+keys[DOWN] = true;
+break;
+case ALLEGRO_KEY_RIGHT:
+keys[RIGHT] = true;
+break;
+case ALLEGRO_KEY_LEFT:
+keys[LEFT] = true;
+break;
 }
- 
-void manipular_entrada(ALLEGRO_EVENT evento)
-{
-  if (evento.type == ALLEGRO_EVENT_KEY_CHAR)
-  {
-    if (strlen(str) <= 16)
-    {
-      char temp[] = {evento.keyboard.unichar, '\0'};
-      if (evento.keyboard.unichar == ' ')
-      {
-        strcat(str, temp);
-      }
-      else if (evento.keyboard.unichar >= '0' &&
-          evento.keyboard.unichar <= '9')
-      {
-        strcat(str, temp);
-      }
-      else if (evento.keyboard.unichar >= 'A' &&
-          evento.keyboard.unichar <= 'Z')
-      {
-        strcat(str, temp);
-      }
-      else if (evento.keyboard.unichar >= 'a' &&
-          evento.keyboard.unichar <= 'z')
-      {
-        strcat(str, temp);
-      }
-    }
- 
-    if (evento.keyboard.keycode == ALLEGRO_KEY_BACKSPACE && strlen(str) != 0)
-    {
-      str[strlen(str) - 1] = '\0';
-    }
-  }
 }
- 
-void exibir_texto_centralizado()
+else if(ev.type == ALLEGRO_EVENT_KEY_UP)
 {
-  if (strlen(str) > 0)
-  {
-    al_draw_text(fonte, al_map_rgb(255, 255, 255), LARGURA_TELA / 2,
-        (ALTURA_TELA - al_get_font_ascent(fonte)) / 2,
-        ALLEGRO_ALIGN_CENTRE, str);
-  }
+switch(ev.keyboard.keycode)
+{
+case ALLEGRO_KEY_UP:
+keys[UP] = false;
+break;
+case ALLEGRO_KEY_DOWN:
+keys[DOWN] = false;
+break;
+case ALLEGRO_KEY_RIGHT:
+keys[RIGHT] = false;
+break;
+case ALLEGRO_KEY_LEFT:
+keys[LEFT] = false;
+break;
+case ALLEGRO_KEY_ESCAPE:
+done = true;
+break;
+}
+}
+else if(ev.type == ALLEGRO_EVENT_TIMER){
+            if(++frameCount >= frameDelay)
+            {
+                if(++curFrame >= maxFrame)
+                {
+                    curFrame = 0;
+                }
+                frameCount = 0;
+            }
+
+}
+else if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
+{
+done = true;
+}
+
+pos_y -= keys[UP] * 10;
+pos_y += keys[DOWN] * 10;
+pos_x -= keys[LEFT] * 10;
+pos_x += keys[RIGHT] * 10;
+
+al_draw_bitmap(pato[curFrame], pos_x, pos_y, 0);
+
+al_flip_display();
+al_clear_to_color(al_map_rgb(0,0,0));
+}
+
+for(i=0; i<maxFrame; i++){
+        al_destroy_bitmap(pato[i]);
+}
+
+al_destroy_event_queue(event_queue);
+al_destroy_display(display); //destroy our display object
+
+return 0;
 }
