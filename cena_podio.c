@@ -10,6 +10,7 @@
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_native_dialog.h>
 #include <stdbool.h>
+#include "cena_podio.h"
 
 const int num_podio = 6;
 const int LARGURA_TELA = 1360;
@@ -21,17 +22,7 @@ ALLEGRO_EVENT_QUEUE *fila_eventos = NULL;
 ALLEGRO_BITMAP *fundo = NULL;
 ALLEGRO_FONT *fonte = NULL;
 ALLEGRO_EVENT evento;
-char *plano_de_fundo = "Images/bk_main.png";
-
-struct top_jogador{
-    int pontos;
-    char nome[30];
-};
-
-struct string {
-  char *ptr;
-  size_t len;
-};
+char *plano_de_fundo = "Images/podio.jpg";
 
 bool inicializar(){
   if (!al_init()){
@@ -91,7 +82,7 @@ bool inicializar(){
   return true;
 }
 
-void init_string(struct string *s) {
+void iniciar_string(String *s) {
   s->len = 0;
   s->ptr = malloc(s->len+1);
   if (s->ptr == NULL) {
@@ -101,8 +92,7 @@ void init_string(struct string *s) {
   s->ptr[0] = '\0';
 }
 
-size_t writefunc(void *ptr, size_t size, size_t nmemb, struct string *s)
-{
+size_t funcao_escrever(void *ptr, size_t size, size_t nmemb, String *s){
   size_t new_len = s->len + size*nmemb;
   s->ptr = realloc(s->ptr, new_len+1);
   if (s->ptr == NULL) {
@@ -116,7 +106,7 @@ size_t writefunc(void *ptr, size_t size, size_t nmemb, struct string *s)
   return size*nmemb;
 }
 
-int comparator (const struct top_jogador* lhs, const struct top_jogador* rhs){
+int comparador(const TopJogador* lhs, const TopJogador* rhs){
     return -(lhs->pontos - rhs->pontos);
 }
 
@@ -155,7 +145,7 @@ void exibir_texto_centralizado(char nome[]){
         ALLEGRO_ALIGN_CENTRE, nome);
 }
 
-bool valida_nome(char nome[], struct top_jogador top[]){
+bool valida_nome(char nome[], TopJogador top[]){
   int i, k = 0;
   for (i = 0; i < 5; i++){
     if (strcmp(nome, top[i].nome) != 0){
@@ -166,36 +156,42 @@ bool valida_nome(char nome[], struct top_jogador top[]){
   else return false;
 }
 
-int main(void){
+int podio(int pontuacao){
+  // variáveis básicas
   CURL *curl;
   CURLcode res;
-  int pontuacao = 105;
   char nome[17] = "", json[500];
   bool sair = false, concluido = false;
   int num_parsed, i, j = 0;
-  struct top_jogador top[num_podio]; 
+  TopJogador top[num_podio]; 
   jsmn_parser parser;
   jsmntok_t t[128];
 
+  // iniciando o parser de json, o curl e o allegro
   jsmn_init(&parser);
   curl = curl_easy_init();
   if (!inicializar()) return -1;
 
+  // só faz se tiver internet
   if(curl) {
-    struct string s;
-    init_string(&s);
+    // inicializando string
+    String s;
+    iniciar_string(&s);
 
+    // inicia o curl e coloca o conteudo para dentro da string
     curl_easy_setopt(curl, CURLOPT_URL, "https://jogoallegro.firebaseio.com/podio.json");
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writefunc);
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, funcao_escrever);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &s);
     res = curl_easy_perform(curl);
 
+    // parse a string
     num_parsed = jsmn_parse(&parser, s.ptr, s.len, t, sizeof(t) / sizeof(t[0]));
 
     if (num_parsed < 0) {
         printf("Failed to parse JSON: %d\n", num_parsed);
         return 1;
     }
+    // inicializa o vetor de struct TopJogador e ordena
     for (i = 1; i < num_parsed; i+=2){
         strncpy(top[j].nome, s.ptr+t[i].start, t[i].end - t[i].start);
         top[j].nome[t[i].end - t[i].start] = '\0';
@@ -203,62 +199,66 @@ int main(void){
         top[j].pontos = atoi(s.ptr + t[i+1].start);
         j++;
     }
-    qsort(top, num_podio-1, sizeof top[0], comparator);
-
-
-    top[num_podio-2].pontos = 100; // TIRAR DEPOIS DE MOSTRAR
-
-
+    qsort(top, num_podio-1, sizeof top[0], comparador);
 
     while(!sair){
+      // desenho
       al_clear_to_color(al_map_rgb(0, 0, 0));
-
+      if (pontuacao <= top[num_podio-2].pontos) concluido = true;
       if (!concluido){
         exibir_texto_centralizado(nome);
         al_draw_text(fonte, al_map_rgb(255, 255, 255), LARGURA_TELA / 2,
           (ALTURA_TELA / 2 - al_get_font_ascent(fonte)) / 2,
           ALLEGRO_ALIGN_CENTRE, "Parabéns pela pontuação! Nome:");
       } else {
+        al_draw_bitmap(fundo, 0, 0, 0);
         for (i = 0; i < num_podio-1; i++){
           al_draw_textf(fonte, al_map_rgb(255, 255, 255), LARGURA_TELA / 2, 200+60*i, ALLEGRO_ALIGN_CENTRE,
            "O(A) jogador(a) %s ficou em %do lugar, com %d pontos", top[i].nome, i+1, top[i].pontos); // DESENHAR PÓDIO
         }
+        al_draw_textf(fonte, al_map_rgb(255, 255, 255), LARGURA_TELA / 2, 200+60*6, ALLEGRO_ALIGN_CENTRE,
+           "Voce ficou com %d pontos", pontuacao);
       }
       al_flip_display();
       
+      // colocando isso depois do desenho para desenhar sem ter que mandar nenhum evento
       al_wait_for_event(fila_eventos, &evento);
 
       if (evento.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
         sair = true;
+
+      // checa se entra no podio
       if (pontuacao > top[num_podio-2].pontos){
         top[5].pontos = pontuacao;
         if(!concluido){
+          // escreve o nome
           manipular_entrada(evento, nome);
           if (evento.type == ALLEGRO_EVENT_KEY_DOWN && evento.keyboard.keycode == ALLEGRO_KEY_ENTER){
+            // valida o nome e escreve coloca ele como top e ordena o vetor
             if(valida_nome(nome, top)){
               concluido = true;
               strcpy(top[5].nome, nome);
-              qsort(top, num_podio, sizeof top[0], comparator);
+              qsort(top, num_podio, sizeof top[0], comparador);
 
+              // coloca no servidor
               sprintf(json, "{ \"%s\": %d, \"%s\": %d, \"%s\": %d, \"%s\": %d, \"%s\": %d }", top[0].nome, top[0].pontos, 
                 top[1].nome, top[1].pontos, top[2].nome, top[2].pontos, top[3].nome, top[3].pontos, top[4].nome, top[4].pontos);
               curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "PUT"); 
               curl_easy_setopt(curl, CURLOPT_POSTFIELDS, json);
               res = curl_easy_perform(curl);
             } else {
+              // caso o nome seja inválido
               al_show_native_message_box(NULL,"Alerta","Alerta",
                     "Esse nome já foi utilizado, tente colocar outro",
                         NULL,ALLEGRO_MESSAGEBOX_OK_CANCEL);
             }
           }
         }
-      } else concluido = true;
+      } 
     }
-
-    if (pontuacao > top[num_podio-2].pontos){
-
-    }
-
+    al_destroy_font(fonte);
+    al_destroy_display(janela);
+    al_destroy_event_queue(fila_eventos);
     // curl -X PUT -d '{ "Luc": 120, "Gil": 100, "Ana": 130, "Mariana": 125, "Ian": 80 }' 'https://jogoallegro.firebaseio.com/podio.json'
     // curl -X POST -d '{"Luc" : 120}' \https://jogoallegro.firebaseio.com/podio.json
     // curl -X DELETE "https://jogoallegro.firebaseio.com/podio/-MGVlHge_5-XN3vOBuLv.json"
