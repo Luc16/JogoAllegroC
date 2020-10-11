@@ -12,15 +12,16 @@
 #define MOSTRAR_HITBOX
 
 // Inicialização de variáveis globais
-const int LARGURA_TELA = 1360;
-const int ALTURA_TELA = 750;
-const int FPS = 60;
-const int numero_de_jogadores = 2;
-const int numero_de_palavras = 8;
-const int numero_de_coronas = 1;
-const int numero_de_plataformas = 5;
-const int numero_de_plataformas_mortais = 1;
-const int numero_de_alcools = 1;
+#define LARGURA_TELA 1360
+#define ALTURA_TELA 750
+#define FPS  60
+#define NUM_JOGADORES  2
+#define NUM_PALAVRAS 8
+#define NUM_CORONAS 1
+#define NUM_PLATAFORMAS 5
+#define NUM_PLATAFORMAS_MORTAIS 1
+#define NUM_ALCOOLS 1
+#define NUM_MINIONS 1
 
 ALLEGRO_DISPLAY *janela = NULL;
 ALLEGRO_EVENT_QUEUE *fila_eventos = NULL;
@@ -55,9 +56,9 @@ typedef struct Struct_P_Ordem {
 // estrutura dos jogadores
 typedef struct Struct_Jogador {
   Posicao pos_jogador;
-  P_Ordem plvr[numero_de_palavras];
+  P_Ordem plvr[NUM_PALAVRAS];
   bool pulando, chao, mov_direita, mov_esquerda, morto;
-  float posicao_y0, ajuste_pos,  x_anterior, y_anterior; 
+  float posicao_y0, ajuste_pos,  x_anterior, y_anterior;
   int i_cair, i_pulo, lado, com_alcool;
 } Jogador;
 
@@ -68,37 +69,53 @@ typedef struct Struct_Alcool {
   bool morto, pego, esguichando;
 } Alcool;
 
+//estrutura minions
+
+typedef struct Struct_Minion{
+    Posicao pos_minion;
+    float vel;
+    float limite1;
+    float limite2;
+    int lado;
+    bool morto;
+
+} Minion;
+
 // Função de inicialização
 bool inicializar(){
   if (!al_init()){
     fprintf(stderr, "Falha ao inicializar a Allegro.\n");
     return false;
   }
- 
+
   al_init_font_addon();
   if (!al_init_ttf_addon()){
     fprintf(stderr, "Falha ao inicializar add-on allegro_ttf.\n");
     return false;
   }
- 
+
   if (!al_init_image_addon()){
     fprintf(stderr, "Falha ao inicializar add-on allegro_image.\n");
     return false;
   }
- 
+
+  if (!al_init_primitives_addon()){
+    fprintf(stderr, "Falha ao inicializar add-on allegro_primitives.\n");
+    return false;
+  }
+
   if (!al_install_keyboard()){
     fprintf(stderr, "Falha ao inicializar o teclado.\n");
     return false;
   }
- 
   janela = al_create_display(LARGURA_TELA, ALTURA_TELA);
   if (!janela){
     fprintf(stderr, "Falha ao criar janela.\n");
     return false;
   }
- 
+
   al_set_window_title(janela, "Joguinho");
- 
+
   fonte = al_load_font("Roboto-Regular.ttf", 100, 0);
   if (!fonte){
     fprintf(stderr, "Falha ao carregar \"fonte Roboto-Regular.ttf\".\n");
@@ -119,7 +136,7 @@ bool inicializar(){
     al_destroy_display(janela);
     return false;
   }
- 
+
   fundo = al_load_bitmap(plano_de_fundo);
   if (!fundo){
     fprintf(stderr, "Falha ao carregar imagem de fundo.\n");
@@ -135,13 +152,13 @@ bool inicializar(){
     al_destroy_event_queue(fila_eventos);
     return false;
   }
- 
+
   al_register_event_source(fila_eventos, al_get_keyboard_event_source());
   al_register_event_source(fila_eventos, al_get_display_event_source(janela));
   al_register_event_source(fila_eventos, al_get_timer_event_source(temporizador));
 
   al_start_timer(temporizador);
- 
+
   return true;
 }
 
@@ -155,7 +172,7 @@ bool jog_colidindo(float x_esquerda, float x_direita, float y_cima, float y_baix
 
 void jog_colisao_lateral(Jogador *jog, float x_esquerda, float x_direita){
   if (jog->x_anterior + jog->pos_jogador.largura <= x_esquerda)
-    jog->pos_jogador.x = x_esquerda - 0.001 - jog->pos_jogador.largura; 
+    jog->pos_jogador.x = x_esquerda - 0.001 - jog->pos_jogador.largura;
   else if (jog->x_anterior - jog->pos_jogador.largura >= x_direita)
     jog->pos_jogador.x = x_direita + 0.001 + jog->pos_jogador.largura;
 }
@@ -220,16 +237,16 @@ void jog_ativar_pulo(Jogador *jog){
   jog->chao = false;
   jog->pulando = true;
   jog->i_pulo = 0;
-  jog->posicao_y0 = jog->pos_jogador.y; 
+  jog->posicao_y0 = jog->pos_jogador.y;
 }
 
 void jog_mover_esquerda(Jogador *jog, int _lado){
-  jog->mov_esquerda = true; 
+  jog->mov_esquerda = true;
   jog->lado = _lado;
 }
 
 void jog_mover_direita(Jogador *jog, int _lado){
-  jog->mov_direita = true; 
+  jog->mov_direita = true;
   jog->lado = _lado;
 }
 
@@ -237,7 +254,7 @@ void jog_mover_lado(Jogador *jog){
   jog->pos_jogador.x += jog->lado*4;
 }
 
-void jog_pular(Jogador *jog){ 
+void jog_pular(Jogador *jog){
   jog->pos_jogador.y = jog->posicao_y0 + 400*jog->i_pulo*jog->i_pulo/3600.0 - 600*jog->i_pulo/60.0;
   jog->i_pulo++;
 }
@@ -256,57 +273,140 @@ bool jog_esta_no_limite_esquerda(Jogador *jog){
   return jog->pos_jogador.x <= LARGURA_TELA*1/10;
 }
 
-void mover_tela_direita(float *mov_tela, Jogador *jog_limite, Jogador *jog_outro, Corona covs[], Alcool alcools[]){
+void mover_tela_direita(float *mov_tela, Jogador *jog_limite, Jogador *jog_outro, Corona covs[], Alcool alcools[], Minion minions[]){
   int i;
   jog_limite->ajuste_pos = jog_limite->pos_jogador.x - LARGURA_TELA*3/4;
   *mov_tela += jog_limite->ajuste_pos;
   jog_limite->pos_jogador.x = LARGURA_TELA*3/4;
   jog_outro->pos_jogador.x -= jog_limite->ajuste_pos;
-  for (i = 0; i < numero_de_alcools; i++){
-    if (!alcools[i].pego)
+  for (i = 0; i < NUM_ALCOOLS; i++){
+    if (!alcools[i].pego && !alcools[i].morto)
       alcools[i].pos_alcool.x -= jog_limite->ajuste_pos;
   }
-  for (i = 0; i < numero_de_coronas; i++)
-    covs[i].pos_corona.x -= jog_limite->ajuste_pos;
+  for (i = 0; i < NUM_CORONAS; i++){
+    if(!covs[i].morto){
+        covs[i].pos_corona.x -= jog_limite->ajuste_pos;
+    }
+  }
+  for(i=0; i<NUM_MINIONS; i++){
+    if(!minions[i].morto){
+        minions[i].pos_minion.x -= jog_limite->ajuste_pos;
+        minions[i].limite1 -= jog_limite->ajuste_pos;
+        minions[i].limite2 -= jog_limite->ajuste_pos;
+    }
+  }
   if (jog_esta_no_limite_esquerda(jog_outro))
     jog_outro->pos_jogador.x = LARGURA_TELA*1/10;
 }
 
-void mover_tela_esquerda(float *mov_tela, Jogador *jog_limite, Jogador *jog_outro, Corona covs[], Alcool alcools[]){
+void mover_tela_esquerda(float *mov_tela, Jogador *jog_limite, Jogador *jog_outro, Corona covs[], Alcool alcools[], Minion minions[]){
   int i;
   jog_limite->ajuste_pos = LARGURA_TELA*1/10 - jog_limite->pos_jogador.x;
   *mov_tela -= jog_limite->ajuste_pos;
   jog_limite->pos_jogador.x = LARGURA_TELA*1/10;
   jog_outro->pos_jogador.x += jog_limite->ajuste_pos;
-  for (i = 0; i < numero_de_alcools; i++){
+  for (i = 0; i < NUM_ALCOOLS; i++){
     if (!alcools[i].pego && !alcools[i].morto)
       alcools[i].pos_alcool.x += jog_limite->ajuste_pos;
   }
-  for (i = 0; i < numero_de_coronas; i++){
+  for (i = 0; i < NUM_CORONAS; i++){
     if (!covs[i].morto)
       covs[i].pos_corona.x += jog_limite->ajuste_pos;
   }
+  for(i=0; i<NUM_MINIONS; i++){
+    if(!minions[i].morto)
+      minions[i].pos_minion.x += jog_limite->ajuste_pos;
+      minions[i].limite1 += jog_limite->ajuste_pos;
+      minions[i].limite2 += jog_limite->ajuste_pos;
+  }
 }
 
-void mover_tela(Jogador jogs[], Corona covs[], Alcool alcools[], float *mov_tela){
+void mover_tela(Jogador jogs[], Corona covs[], Alcool alcools[], Minion minions[], float *mov_tela){
   if (jog_esta_no_limite_direita(&jogs[0]) && jogs[0].pos_jogador.x > jogs[1].pos_jogador.x){
-    mover_tela_direita(mov_tela, &jogs[0], &jogs[1], covs, alcools);
+    mover_tela_direita(mov_tela, &jogs[0], &jogs[1], covs, alcools, minions);
   }
   else if (jog_esta_no_limite_direita(&jogs[1])){
-    mover_tela_direita(mov_tela, &jogs[1], &jogs[0], covs, alcools);
-  }  
+    mover_tela_direita(mov_tela, &jogs[1], &jogs[0], covs, alcools, minions);
+  }
   else if (jog_esta_no_limite_esquerda(&jogs[0]) && jogs[0].pos_jogador.x < jogs[1].pos_jogador.x){
-    mover_tela_esquerda(mov_tela, &jogs[0], &jogs[1], covs, alcools);
+    mover_tela_esquerda(mov_tela, &jogs[0], &jogs[1], covs, alcools, minions);
   }
   else if (jog_esta_no_limite_esquerda(&jogs[1])){
-    mover_tela_esquerda(mov_tela, &jogs[1], &jogs[0], covs, alcools);
+    mover_tela_esquerda(mov_tela, &jogs[1], &jogs[0], covs, alcools, minions);
   }
+}
+
+// funções minions
+void minion_iniciar(Minion minions[])
+{
+    int i;
+    for(i = 0; i < NUM_MINIONS; i++)
+	{
+		minions[i].vel = 4;
+		minions[i].morto = false;
+		minions[i].pos_minion.x = 251;
+		minions[i].pos_minion.y = 200;
+		minions[i].pos_minion.col_altura = 20;
+		minions[i].pos_minion.col_largura = 20;
+		minions[i].limite1 = 50;
+		minions[i].limite2 = 750;
+		minions[i].lado = 1;
+	}
+}
+void minion_colide(Minion minions[], Jogador jogs[])
+{
+    int i, j;
+    for(j=0; j<NUM_MINIONS; j++){
+        if(!minions[j].morto){
+            for(i=0; i<NUM_JOGADORES; i++){
+                if(!jogs[i].morto){
+                    if(jogs[i].pos_jogador.y - jogs[i].pos_jogador.col_altura < minions[j].pos_minion.y + minions[j].pos_minion.col_altura &&
+                       jogs[i].pos_jogador.y + jogs[i].pos_jogador.col_altura > minions[j].pos_minion.y - minions[j].pos_minion.col_altura &&
+                       jogs[i].pos_jogador.x + jogs[i].pos_jogador.col_largura > minions[j].pos_minion.x - minions[j].pos_minion.col_largura &&
+                       jogs[i].pos_jogador.x - jogs[i].pos_jogador.col_largura < minions[j].pos_minion.x + minions[j].pos_minion.col_largura){
+
+                       jogs[i].morto = true;
+                   }
+                }
+            }
+        }
+    }
+
+}
+void minion_atualizar(Minion minions[])
+{
+
+    int i;
+    for(i = 0; i < NUM_MINIONS; i++)
+    {
+       if(!minions[i].morto){
+           minions[i].pos_minion.x += (minions[i].vel)*(minions[i].lado);
+
+           if(minions[i].pos_minion.x >= minions[i].limite2){
+                minions[i].pos_minion.x = minions[i].limite2;
+                minions[i].lado = -1;
+           }
+           else if(minions[i].pos_minion.x <= minions[i].limite1){
+                minions[i].pos_minion.x = minions[i].limite1;
+                minions[i].lado = 1;
+           }
+       }
+    }
+
+}
+void minion_vira_direita(Minion *minions)
+{
+    minions->lado = 1;
+}
+void minion_vira_esquerda(Minion *minions)
+{
+    minions->lado = -1;
 }
 
 // funções corona
 void corona_iniciar(Corona covs[]){
   int i;
-  for (i = 0; i < numero_de_coronas; i++){
+  for (i = 0; i < NUM_CORONAS; i++){
     covs[i].pos_corona.altura = 60;
     covs[i].pos_corona.largura = 60;
     covs[i].pos_corona.col_altura = 42;
@@ -316,20 +416,20 @@ void corona_iniciar(Corona covs[]){
     covs[i].morto = false;
     covs[i].ativado = true;
     covs[i].velocidade = 3;
-    covs[i].bm_corona = al_load_bitmap("./Images/corona.png");
+    covs[i].bm_corona = al_load_bitmap("Images/corona.png");
     if (!covs[i].bm_corona){
       fprintf(stderr, "Falha ao carregar imagem do corona.\n");
       al_destroy_display(janela);
       al_destroy_event_queue(fila_eventos);
-  }
+    }
     al_convert_mask_to_alpha(covs[i].bm_corona, al_map_rgb(255, 0, 0));
   }
 }
 
 void corona_movimento(Corona *cov, Jogador jogs[]){
   int i;
-  float distancia = MAXFLOAT, dx, dy;
-  for (i = 0; i < numero_de_jogadores; i++){
+  float distancia = 10000, dx, dy;
+  for (i = 0; i < NUM_JOGADORES; i++){
     if (!jogs[i].morto){
       float dxi = jogs[i].pos_jogador.x - cov->pos_corona.x;
       float dyi = jogs[i].pos_jogador.y - cov->pos_corona.y;
@@ -348,24 +448,24 @@ void corona_movimento(Corona *cov, Jogador jogs[]){
 
 void corona_atualizar(Corona covs[], Jogador jogs[]){
   int i;
-  for (i = 0; i < numero_de_coronas; i++){
+  for (i = 0; i < NUM_CORONAS; i++){
     if(!covs[i].morto && covs[i].ativado){
       corona_movimento(&covs[i], jogs);
     }
   }
-} 
+}
 
 void corona_colide(Corona *cov, Jogador jogs[]){
   int i, j;
-  for(j = 0; j < numero_de_coronas; j++){
+  for(j = 0; j < NUM_CORONAS; j++){
     if (!cov[j].morto && cov[j].ativado){
-      for(i = 0; i < numero_de_jogadores; i++){
+      for(i = 0; i < NUM_JOGADORES; i++){
         if (!jogs[i].morto && !cov[j].morto){
           if (jogs[i].pos_jogador.y - jogs[i].pos_jogador.col_altura < cov[j].pos_corona.y + cov[j].pos_corona.col_altura &&
               jogs[i].pos_jogador.y + jogs[i].pos_jogador.col_altura > cov[j].pos_corona.y - cov[j].pos_corona.col_altura &&
               jogs[i].pos_jogador.x + jogs[i].pos_jogador.col_largura > cov[j].pos_corona.x - cov[j].pos_corona.col_largura &&
               jogs[i].pos_jogador.x - jogs[i].pos_jogador.col_largura < cov[j].pos_corona.x + cov[j].pos_corona.col_largura){
-          
+
           jogs[i].morto = true;
           cov[j].morto = true;
           }
@@ -378,21 +478,21 @@ void corona_colide(Corona *cov, Jogador jogs[]){
 // funções palavra de ordem
 void p_ordem_iniciar(P_Ordem plvr[]){
   int i;
-  for (i = 0; i < numero_de_palavras; i++){
+  for (i = 0; i < NUM_PALAVRAS; i++){
     plvr[i].morto = true;
     plvr[i].lado = 0;
     plvr[i].velocidade = 5;
     plvr[i].pos_ordem.altura = 5;
     plvr[i].pos_ordem.largura = 20;
-    plvr[i].pos_ordem.col_altura = plvr[i].pos_ordem.altura;
-    plvr[i].pos_ordem.col_largura = plvr[i].pos_ordem.largura;
+    plvr[i].pos_ordem.col_altura = 10;
+    plvr[i].pos_ordem.col_largura = 25;
   }
 }
 
 void p_ordem_atirar(Jogador *jog){
   int j;
   if (!jog->morto){
-    for (j = 0; j < numero_de_palavras; j++){
+    for (j = 0; j < NUM_PALAVRAS; j++){
       if (jog->plvr[j].morto){
         jog->plvr[j].morto = false;
         jog->plvr[j].lado = jog->lado;
@@ -405,11 +505,39 @@ void p_ordem_atirar(Jogador *jog){
   }
 }
 
+void p_ordem_colide(Jogador jogs[], Minion minions[])
+{
+   int i, j, k;
+    for(k=0; k<NUM_JOGADORES; k++){
+        if(!jogs[k].morto){
+            for(j=0; j<NUM_PALAVRAS; j++){
+                if(!jogs[k].plvr[j].morto){
+                    for(i=0; i<NUM_MINIONS; i++){
+                        if(!minions[i].morto){
+                            if(jogs[k].plvr[j].pos_ordem.y - jogs[k].plvr[j].pos_ordem.col_altura < minions[i].pos_minion.y + minions[i].pos_minion.col_altura &&
+                                jogs[k].plvr[j].pos_ordem.y + jogs[k].plvr[j].pos_ordem.col_altura > minions[i].pos_minion.y - minions[i].pos_minion.col_altura &&
+                                jogs[k].plvr[j].pos_ordem.x + jogs[k].plvr[j].pos_ordem.col_largura > minions[i].pos_minion.x - minions[i].pos_minion.col_largura &&
+                                jogs[k].plvr[j].pos_ordem.x - jogs[k].plvr[j].pos_ordem.col_largura < minions[i].pos_minion.x + minions[i].pos_minion.col_largura){
+                                    if(jogs[k].plvr[j].lado == 1){
+                                        minion_vira_direita(&minions[i]);
+                                    }
+                                    else if(jogs[k].plvr[j].lado == -1){
+                                        minion_vira_esquerda(&minions[i]);
+                                    }
+                                    jogs[k].plvr[j].morto = true;
+                         }
+                       }
+                    }
+                }
+            }
+        }
+    }
+}
 void p_ordem_atualizar(Jogador jogs[]){
   int i, j;
-  for (i = 0; i < numero_de_jogadores; i++){
+  for (i = 0; i < NUM_JOGADORES; i++){
     if (!jogs[i].morto){
-      for (j = 0; j < numero_de_palavras; j++){
+      for (j = 0; j < NUM_PALAVRAS; j++){
         if (!jogs[i].plvr[j].morto){
           if (jogs[i].plvr[j].pos_ordem.x - jogs[i].plvr[j].pos0 >= LARGURA_TELA/2 || jogs[i].plvr[j].pos_ordem.x - jogs[i].plvr[j].pos0 <= -LARGURA_TELA/2)
             jogs[i].plvr[j].morto = true;
@@ -422,13 +550,16 @@ void p_ordem_atualizar(Jogador jogs[]){
 
 void p_ordem_desenhar(Jogador jogs[]){
   int i, j;
-  for (i = 0; i < numero_de_jogadores; i++){
+  for (i = 0; i < NUM_JOGADORES; i++){
     if (!jogs[i].morto){
-      for (j = 0; j < numero_de_palavras; j++){
+      for (j = 0; j < NUM_PALAVRAS; j++){
         if (!jogs[i].plvr[j].morto){
-          al_draw_text(fonte2, al_map_rgb(255, 255, 255), jogs[i].plvr[j].pos_ordem.x, 
-                        jogs[i].plvr[j].pos_ordem.y-10, ALLEGRO_ALIGN_CENTRE, "Tira a mao");
-          al_draw_text(fonte2, al_map_rgb(255, 255, 255), jogs[i].plvr[j].pos_ordem.x, 
+          // al_draw_filled_rectangle(jogs[i].plvr[j].pos_ordem.x, jogs[i].plvr[j].pos_ordem.y+jogs[i].plvr[j].pos_ordem.col_altura,
+          // jogs[i].plvr[j].pos_ordem.x + jogs[i].plvr[j].pos_ordem.col_largura*jogs[i].plvr[j].lado,
+          // jogs[i].plvr[j].pos_ordem.y - jogs[i].plvr[j].pos_ordem.col_altura, al_map_rgb(50, 50, 50));
+          al_draw_text(fonte2, al_map_rgb(255, 255, 255), jogs[i].plvr[j].pos_ordem.x,
+                        jogs[i].plvr[j].pos_ordem.y - jogs[i].plvr[j].pos_ordem.col_altura, ALLEGRO_ALIGN_CENTRE, "Tira a mao");
+          al_draw_text(fonte2, al_map_rgb(255, 255, 255), jogs[i].plvr[j].pos_ordem.x,
                         jogs[i].plvr[j].pos_ordem.y, ALLEGRO_ALIGN_CENTRE, "do meu IFSC");
         }
       }
@@ -439,7 +570,7 @@ void p_ordem_desenhar(Jogador jogs[]){
 // funções alcool
 void alcool_iniciar(Alcool alcools[]){ // colocar array de posição dos alcools
   int i;
-  for (i = 0; i < numero_de_alcools; i++){
+  for (i = 0; i < NUM_ALCOOLS; i++){
     alcools[i].morto = false;
     alcools[i].pego = false;
     alcools[i].lado = 0;
@@ -484,10 +615,10 @@ void alcool_atirar(Alcool alcools[], Jogador *jog){
 
 void alcool_atualizar(Alcool alcools[], Jogador jogs[], Corona covs[]){
   int i, j;
-  for (j = 0; j < numero_de_alcools; j++){
+  for (j = 0; j < NUM_ALCOOLS; j++){
     if (!alcools[j].morto){
       if (!alcools[j].pego && !alcools[j].esguichando){
-        for (i = 0; i < numero_de_jogadores; i++){
+        for (i = 0; i < NUM_JOGADORES; i++){
           if (!jogs[i].morto && jogs[i].com_alcool == -1){
             if (alcool_colidindo_jog(&alcools[j], &jogs[i])){
               jogs[i].com_alcool = alcools[j].idx;
@@ -500,13 +631,13 @@ void alcool_atualizar(Alcool alcools[], Jogador jogs[], Corona covs[]){
         if (alcools[j].i_esg >= 10){
           alcools[j].pego = false;
           alcools[j].morto = true;
-          for(i = 0; i < numero_de_jogadores; i++){
+          for(i = 0; i < NUM_JOGADORES; i++){
             if(jogs[i].com_alcool == j){
               jogs[i].com_alcool = -1;
             }
-          }         
+          }
         } else {
-          for(i = 0; i < numero_de_coronas; i++){
+          for(i = 0; i < NUM_CORONAS; i++){
             if (alcool_colidindo_corona(&alcools[j], &covs[i])){
               covs[i].morto = true;
             }
@@ -514,7 +645,7 @@ void alcool_atualizar(Alcool alcools[], Jogador jogs[], Corona covs[]){
         }
         alcools[j].i_esg++;
       } else {
-        for (i = 0; i < numero_de_jogadores; i++){
+        for (i = 0; i < NUM_JOGADORES; i++){
           if(jogs[i].com_alcool == j){
             if (jogs[i].morto)
               alcools[j].morto = true;
@@ -528,14 +659,14 @@ void alcool_atualizar(Alcool alcools[], Jogador jogs[], Corona covs[]){
 }
 
 void alcool_desenhar(Alcool alcools[]){
-  int i; 
-  for (i = 0; i < numero_de_alcools; i++){
+  int i;
+  for (i = 0; i < NUM_ALCOOLS; i++){
     if (!alcools[i].morto){
       if (!alcools[i].esguichando)
         al_draw_filled_circle(alcools[i].pos_alcool.x, alcools[i].pos_alcool.y, alcools[i].pos_alcool.altura, al_map_rgb(255, 255, 255));
       else {
         al_draw_filled_rectangle(alcools[i].pos_alcool.x - alcools[i].pos_alcool.col_largura,
-         alcools[i].pos_alcool.y + alcools[i].pos_alcool.col_altura, 
+         alcools[i].pos_alcool.y + alcools[i].pos_alcool.col_altura,
           alcools[i].pos_alcool.x + alcools[i].pos_alcool.col_largura,
            alcools[i].pos_alcool.y - alcools[i].pos_alcool.col_altura, al_map_rgb(255, 255, 255));
       }
@@ -546,7 +677,7 @@ void alcool_desenhar(Alcool alcools[]){
 // atualizar dados jogador
 void jog_iniciar(Jogador jogs[]){
   int i_jog;
-  for (i_jog = 0; i_jog < numero_de_jogadores; i_jog++){
+  for (i_jog = 0; i_jog < NUM_JOGADORES; i_jog++){
     jogs[i_jog].pos_jogador.x = LARGURA_TELA/2;
     jogs[i_jog].x_anterior = LARGURA_TELA/2;
     jogs[i_jog].pos_jogador.y = 0;
@@ -557,11 +688,11 @@ void jog_iniciar(Jogador jogs[]){
     jogs[i_jog].pos_jogador.col_largura = 15;
     jogs[i_jog].chao = false;
     jogs[i_jog].pulando = false;
-    jogs[i_jog].mov_esquerda = false; 
-    jogs[i_jog].mov_direita = false; 
+    jogs[i_jog].mov_esquerda = false;
+    jogs[i_jog].mov_direita = false;
     jogs[i_jog].morto = false;
     jogs[i_jog].com_alcool = -1;
-    jogs[i_jog].posicao_y0 = 0; 
+    jogs[i_jog].posicao_y0 = 0;
     jogs[i_jog].lado = 0;
     jogs[i_jog].i_cair = 0;
     jogs[i_jog].i_pulo = 0;
@@ -571,7 +702,7 @@ void jog_iniciar(Jogador jogs[]){
 
 void jog_atualizar_pos_anterior(Jogador jogs[]){
   int i_jog;
-  for (i_jog = 0; i_jog < numero_de_jogadores; i_jog++){
+  for (i_jog = 0; i_jog < NUM_JOGADORES; i_jog++){
     jogs[i_jog].x_anterior = jogs[i_jog].pos_jogador.x;
     jogs[i_jog].y_anterior = jogs[i_jog].pos_jogador.y;
   }
@@ -579,13 +710,13 @@ void jog_atualizar_pos_anterior(Jogador jogs[]){
 
 void jog_atualizar_geral(Jogador jogs[], float plataformas[][4], float plataformas_mortais[][4], float mov_tela){
   int i_jog, i;
-  for (i_jog = 0; i_jog < numero_de_jogadores; i_jog++){
+  for (i_jog = 0; i_jog < NUM_JOGADORES; i_jog++){
     jogs[i_jog].ajuste_pos = 0;
 
     if (!jogs[i_jog].morto){
       //pular e cair
       if (jogs[i_jog].pulando){
-        jog_pular(&jogs[i_jog]);    
+        jog_pular(&jogs[i_jog]);
       } else {
         jog_cair(&jogs[i_jog]);
       }
@@ -593,9 +724,9 @@ void jog_atualizar_geral(Jogador jogs[], float plataformas[][4], float plataform
       if (jogs[i_jog].mov_direita || jogs[i_jog].mov_esquerda){
         jog_mover_lado(&jogs[i_jog]);
       }
-      for (i = 0; i < numero_de_plataformas; i++)
+      for (i = 0; i < NUM_PLATAFORMAS; i++)
         jog_colisao_geral(plataformas[i], &jogs[i_jog], mov_tela);
-      for (i = 0; i < numero_de_plataformas_mortais; i++)
+      for (i = 0; i < NUM_PLATAFORMAS_MORTAIS; i++)
         jog_colisao_mortal(plataformas_mortais[i], &jogs[i_jog], mov_tela);
 
       if (jogs[i_jog].pos_jogador.y >= ALTURA_TELA + 1000) jogs[i_jog].morto = true;
@@ -620,7 +751,7 @@ void apertar_botao(ALLEGRO_EVENT evento, Jogador jogs[], Alcool alcools[]){
       break;
     case ALLEGRO_KEY_LEFT:
       jog_mover_esquerda(&jogs[0], -1);
-      break; 
+      break;
     case ALLEGRO_KEY_RIGHT:
       jog_mover_direita(&jogs[0], 1);
       break;
@@ -635,7 +766,7 @@ void apertar_botao(ALLEGRO_EVENT evento, Jogador jogs[], Alcool alcools[]){
       break;
     case ALLEGRO_KEY_A:
       jog_mover_esquerda(&jogs[1], -1);
-      break; 
+      break;
     case ALLEGRO_KEY_D:
       jog_mover_direita(&jogs[1], 1);
       break;
@@ -674,20 +805,21 @@ void soltar_botao(ALLEGRO_EVENT evento, Jogador jogs[]){
 }
 
 int main(){
-  Jogador jogadores[numero_de_jogadores];
-  Corona covid[numero_de_coronas];
-  Alcool alcools[numero_de_alcools];
+  Jogador jogadores[NUM_JOGADORES];
+  Corona covid[NUM_CORONAS];
+  Alcool alcools[NUM_ALCOOLS];
+  Minion minions[NUM_MINIONS];
   bool sair = false, fim = false, atualizar_e_desenho = false;
-  float plataformas[numero_de_plataformas][4] = {
-                {0, 690, 10000, ALTURA_TELA}, 
+  float plataformas[NUM_PLATAFORMAS][4] = {
+                {0, 690, 10000, ALTURA_TELA},
                 {1100, 380, LARGURA_TELA, 420},
                 {800, 520, 1050, 560},
                 {1750, 380, 2000, 420},
-                {1450, 520, 1700, 560},
+                {1450, 520, 1700, 560}
               };
-  float plataformas_mortais[numero_de_plataformas_mortais][4] = {{380, 600, 420, 690}};
+  float plataformas_mortais[NUM_PLATAFORMAS_MORTAIS][4] = {{380, 600, 420, 690}};
   int r = 20;
-  float mov_tela = 0; 
+  float mov_tela = 0;
 
   if (!inicializar()) return -1;
 
@@ -695,14 +827,15 @@ int main(){
   alcool_iniciar(alcools);
   jog_iniciar(jogadores);
   corona_iniciar(covid);
+  minion_iniciar(minions);
 
   al_draw_bitmap(fundo, 0, 0, 0);
 
-  while (!sair){  
+  while (!sair){
     al_wait_for_event(fila_eventos, &evento);
 
     if (evento.type == ALLEGRO_EVENT_TIMER){
-      mover_tela(jogadores, covid, alcools, &mov_tela);      
+      mover_tela(jogadores, covid, alcools, minions, &mov_tela);
       jog_atualizar_pos_anterior(jogadores);
       atualizar_e_desenho = true;
     }
@@ -717,7 +850,7 @@ int main(){
 
     if (atualizar_e_desenho && al_is_event_queue_empty(fila_eventos)){
       atualizar_e_desenho = false;
-      
+
       al_clear_to_color(al_map_rgb(0, 0, 0));
       al_draw_bitmap(fundo, 0-mov_tela, 0, 0);
 
@@ -726,27 +859,34 @@ int main(){
       corona_atualizar(covid, jogadores);
       corona_colide(covid, jogadores);
       alcool_atualizar(alcools, jogadores, covid);
-      
+      minion_atualizar(minions);
+      p_ordem_colide(jogadores, minions);
+      minion_colide(minions, jogadores);
+
       p_ordem_desenhar(jogadores);
       alcool_desenhar(alcools);
 
       #ifdef MOSTRAR_HITBOX
         int i;
-        for (i = 0; i < numero_de_plataformas; i++)
+        for (i = 0; i < NUM_PLATAFORMAS; i++)
           al_draw_filled_rectangle(plataformas[i][0]-mov_tela, plataformas[i][1], plataformas[i][2]-mov_tela, plataformas[i][3], al_map_rgb(255, 255, 0));
-        for (i = 0; i < numero_de_plataformas_mortais; i++)
+        for (i = 0; i < NUM_PLATAFORMAS_MORTAIS; i++)
           al_draw_filled_rectangle(plataformas_mortais[i][0]-mov_tela, plataformas_mortais[i][1], plataformas_mortais[i][2]-mov_tela, plataformas_mortais[i][3], al_map_rgb(255, 255, 255));
       #endif
 
       if(!jogadores[0].morto) al_draw_filled_circle(jogadores[0].pos_jogador.x, jogadores[0].pos_jogador.y, r, al_map_rgb(255, 0, 0));
       if(!jogadores[1].morto) al_draw_filled_circle(jogadores[1].pos_jogador.x, jogadores[1].pos_jogador.y, r, al_map_rgb(0, 0, 255));
-      for (i = 0; i < numero_de_coronas; i++)
+      for (i = 0; i < NUM_CORONAS; i++)
         if(!covid[i].morto && covid[i].ativado){
           al_draw_filled_circle(covid[i].pos_corona.x, covid[i].pos_corona.y, covid[i].pos_corona.altura, al_map_rgb(255, 255, 255));
           al_draw_bitmap(covid[i].bm_corona, covid[i].pos_corona.x, covid[i].pos_corona.y, 0);
           al_draw_filled_rectangle(covid[i].pos_corona.x + covid[i].pos_corona.col_altura, covid[i].pos_corona.y - covid[i].pos_corona.col_altura,
            covid[i].pos_corona.x - covid[i].pos_corona.col_altura, covid[i].pos_corona.y + covid[i].pos_corona.col_altura, al_map_rgb(255, 255, 0));
-        } 
+        }
+      for (i = 0; i < NUM_MINIONS; i++)
+        if(!minions[i].morto){
+          al_draw_filled_circle(minions[i].pos_minion.x, minions[i].pos_minion.y, 30, al_map_rgb(255, 255, 255));
+        }
 
       // acabar o jogo
       if (fim){
@@ -758,7 +898,7 @@ int main(){
         al_draw_text(fonte, al_map_rgb(255, 0, 0), LARGURA_TELA/2, ALTURA_TELA/2-100, ALLEGRO_ALIGN_CENTRE, "VOCE PERDEU O JOGO");
         fim = true;
       }
-      
+
       al_flip_display();
     }
   }
@@ -767,6 +907,6 @@ int main(){
   al_destroy_display(janela);
   al_destroy_timer(temporizador);
   al_destroy_event_queue(fila_eventos);
- 
+
   return 0;
 }
