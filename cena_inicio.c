@@ -6,6 +6,7 @@
 #include <allegro5/allegro_ttf.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
+#include "cena_inicio.h"
 #include <stdio.h>
 
 // Atributos da tela
@@ -20,15 +21,12 @@ bool botao_colisao(float Xm, float Ym, float Xc, float Yc, ALLEGRO_BITMAP *botao
    Ym <= Yc + al_get_bitmap_height(botao_generico)/2;
 }
 
-int main(void){
-    ALLEGRO_DISPLAY *janela = NULL;
+int inicio(ALLEGRO_DISPLAY *janela, ALLEGRO_AUDIO_STREAM *musica, ALLEGRO_EVENT_QUEUE *fila_eventos, ALLEGRO_FONT *fonte, ALLEGRO_EVENT evento){
+    ALLEGRO_BITMAP *botao_ajuste = NULL, *botao_iniciar = NULL, *botao_ajuda = NULL, *botao_jogador = NULL, *botao_jogadores = NULL, *botao_musica = NULL;
+    /*ALLEGRO_DISPLAY *janela = NULL;
     ALLEGRO_AUDIO_STREAM *musica = NULL;
     ALLEGRO_EVENT_QUEUE *fila_eventos = NULL;
     ALLEGRO_FONT *fonte = NULL;
-    ALLEGRO_BITMAP *botao_ajuste = NULL, *botao_iniciar = NULL, *botao_ajuda = NULL, *botao_jogador = NULL, *botao_jogadores = NULL, *botao_musica = NULL;
-
-    bool sair = false;
-    int tela = 1;
 
     if (!al_init()){
         return -1;
@@ -71,11 +69,37 @@ int main(void){
         al_destroy_display(janela);
         return -1;
     }
+    fila_eventos = al_create_event_queue();
+
+    if (!fila_eventos){
+        al_destroy_display(janela);
+        return -1;
+    }
+    if (!al_reserve_samples(1))
+    {
+        fprintf(stderr, "Falha ao alocar canais de áudio.\n");
+        return -1;
+    }
+    musica = al_load_audio_stream("musica_fundo.ogg", 4, 1024);
+    if (!musica)
+    {
+        fprintf(stderr, "Falha ao carregar audio.\n");
+        al_destroy_event_queue(fila_eventos);
+        al_destroy_display(janela);
+        return -1;
+    }
+
+    // Dizemos que vamos tratar os eventos vindos do mouse
+    al_register_event_source(fila_eventos, al_get_mouse_event_source());
+    al_attach_audio_stream_to_mixer(musica, al_get_default_mixer());
+    al_set_audio_stream_playmode(musica, ALLEGRO_PLAYMODE_LOOP);
+    al_set_audio_stream_playing(musica, true);*/
 
     //botão de iniciar o jogo
     botao_iniciar = al_create_bitmap(LARGURA_TELA / 5, ALTURA_TELA / 8);
     if (!botao_iniciar){
         al_destroy_display(janela);
+        fprintf(stderr, "erro com os bitmaps");
         return -1;
     }
     //botão de ajustes
@@ -120,32 +144,9 @@ int main(void){
         al_destroy_bitmap(botao_jogadores);
         al_destroy_display(janela);
     }
-    fila_eventos = al_create_event_queue();
 
-    if (!fila_eventos){
-        al_destroy_display(janela);
-        return -1;
-    }
-    if (!al_reserve_samples(1))
-    {
-        fprintf(stderr, "Falha ao alocar canais de áudio.\n");
-        return -1;
-    }
-    musica = al_load_audio_stream("musica_fundo.ogg", 4, 1024);
-    if (!musica)
-    {
-        fprintf(stderr, "Falha ao carregar audio.\n");
-        al_destroy_event_queue(fila_eventos);
-        al_destroy_display(janela);
-        return -1;
-    }
-
-    // Dizemos que vamos tratar os eventos vindos do mouse
-    al_register_event_source(fila_eventos, al_get_mouse_event_source());
-    al_attach_audio_stream_to_mixer(musica, al_get_default_mixer());
-    al_set_audio_stream_playmode(musica, ALLEGRO_PLAYMODE_LOOP);
-    al_set_audio_stream_playing(musica, true);
-
+    bool sair = false, xis = false;
+    int tela = 1;
     bool no_botao_inicio = false;
     bool no_botao_ajuste = false;
     bool no_botao_ajuda = false;
@@ -159,7 +160,6 @@ int main(void){
     while (!sair){
         // Verificamos se há eventos na fila
         while (!al_is_event_queue_empty(fila_eventos)){
-            ALLEGRO_EVENT evento;
             al_wait_for_event(fila_eventos, &evento);
 
             // Se o evento foi de movimentação do mouse
@@ -234,6 +234,10 @@ int main(void){
                         al_set_audio_stream_playing(musica, true);
                     }
                 }
+            } 
+            else if (evento.type == ALLEGRO_EVENT_DISPLAY_CLOSE){
+                sair = true;
+                xis = true;
             }
 
         }
@@ -365,10 +369,7 @@ int main(void){
     al_destroy_bitmap(botao_jogador);
     al_destroy_bitmap(botao_jogadores);
     al_destroy_bitmap(botao_musica);
-    al_destroy_audio_stream(musica);
-    al_destroy_font(fonte);
-    al_destroy_display(janela);
-    al_destroy_event_queue(fila_eventos);
 
-    return 0;
+    if (!xis) return 0;
+    else return 2;
 }
