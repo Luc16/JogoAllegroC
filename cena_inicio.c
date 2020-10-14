@@ -21,10 +21,19 @@ bool botao_colisao(float Xm, float Ym, float Xc, float Yc, ALLEGRO_BITMAP *botao
    Ym <= Yc + al_get_bitmap_height(botao_generico)/2;
 }
 
-int inicio(ALLEGRO_DISPLAY *janela, ALLEGRO_AUDIO_STREAM *musica, ALLEGRO_EVENT_QUEUE *fila_eventos, ALLEGRO_FONT *fonte, ALLEGRO_EVENT evento, int *num_jogs){
-    ALLEGRO_BITMAP *botao_ajuste = NULL, *botao_iniciar = NULL, *botao_ajuda = NULL, *botao_jogador = NULL, *botao_jogadores = NULL;
-    ALLEGRO_BITMAP *botao_musica = NULL, *botao_controle = NULL, *botao_jogabilidade = NULL, *fundo_jogabilidade = NULL, *fundo_controle = NULL;
+int inicio(ALLEGRO_DISPLAY *janela, ALLEGRO_AUDIO_STREAM *musica, ALLEGRO_EVENT_QUEUE *fila_eventos, ALLEGRO_FONT *fonte, ALLEGRO_FONT *fonte0, ALLEGRO_EVENT evento, int *num_jogs){
+    ALLEGRO_BITMAP *botao_ajuste = NULL, *botao_iniciar = NULL, *botao_ajuda = NULL, *botao_jogador = NULL, *botao_jogadores = NULL, *fundo_inicio = NULL;
+    ALLEGRO_BITMAP *botao_musica = NULL, *botao_controle = NULL, *botao_jogabilidade = NULL, *fundo_jogabilidade = NULL, *fundo_controle = NULL, *engrenagem = NULL;
 
+    fundo_inicio = al_load_bitmap("Images/fundo_inicio.png");
+    if (!fundo_inicio){
+      fprintf(stderr, "Falha ao carregar imagem de fundo.\n");
+    }
+    engrenagem = al_load_bitmap("Images/engrenagem.png");
+    if (!engrenagem){
+      fprintf(stderr, "Falha ao carregar imagem da engrenagem.\n");
+    }
+    al_convert_mask_to_alpha(engrenagem, al_map_rgb(255, 255, 255));
     fundo_jogabilidade = al_load_bitmap("Images/Jogabilidade.png");
     if (!fundo_jogabilidade){
       fprintf(stderr, "Falha ao carregar imagem fundo_jogabilidade.\n");
@@ -120,7 +129,7 @@ int inicio(ALLEGRO_DISPLAY *janela, ALLEGRO_AUDIO_STREAM *musica, ALLEGRO_EVENT_
     bool tocando = true;
     bool clic_botao_jogador = false;
     bool clic_botao_jogadores = false;
-    bool clic_botao_controle = false;
+    bool clic_botao_controle = true;
     bool clic_botao_jogabilidade = false;
 
     while (!sair){
@@ -248,7 +257,7 @@ int inicio(ALLEGRO_DISPLAY *janela, ALLEGRO_AUDIO_STREAM *musica, ALLEGRO_EVENT_
             // Colorir o bitmap do botão ajuda
             al_set_target_bitmap(botao_ajuda);
             if(!no_botao_ajuda){
-                al_clear_to_color(al_map_rgb(255, 0, 0));
+                al_clear_to_color(al_map_rgb(255, 255, 255));
             }
             else{
                 al_clear_to_color(al_map_rgb(255, 0, 200));
@@ -256,14 +265,17 @@ int inicio(ALLEGRO_DISPLAY *janela, ALLEGRO_AUDIO_STREAM *musica, ALLEGRO_EVENT_
             //Colorir o bitmap do botao ajuste
             al_set_target_bitmap(botao_ajuste);
             if(!no_botao_ajuste){
-                al_clear_to_color(al_map_rgb(255, 0, 0));
+                al_clear_to_color(al_map_rgb(255, 255, 255));
             }
             else{
                 al_clear_to_color(al_map_rgb(255, 0, 200));
             }
 
             al_set_target_bitmap(al_get_backbuffer(janela));
+            al_draw_bitmap(fundo_inicio, 0, 0, 0);
             //botão inicio
+            al_draw_text(fonte0, al_map_rgb(255, 255, 0), LARGURA_TELA/2, ALTURA_TELA/2 - 200, ALLEGRO_ALIGN_CENTRE, "Patolindo e Bobola X 2020");
+
             al_draw_bitmap(botao_iniciar, LARGURA_TELA / 2 - al_get_bitmap_width(botao_iniciar) / 2,
             ALTURA_TELA / 2 - al_get_bitmap_height(botao_iniciar) / 2, 0);
 
@@ -272,12 +284,17 @@ int inicio(ALLEGRO_DISPLAY *janela, ALLEGRO_AUDIO_STREAM *musica, ALLEGRO_EVENT_
             //botão ajuda
             al_draw_bitmap(botao_ajuda, LARGURA_TELA - al_get_bitmap_width(botao_ajuda) - 10,
             ALTURA_TELA - al_get_bitmap_height(botao_ajuda) - 690 , 0);
+            al_draw_text(fonte, al_map_rgb(50, 50, 50), LARGURA_TELA - al_get_bitmap_width(botao_ajuda)/2 - 10,
+            ALTURA_TELA - al_get_bitmap_height(botao_ajuda)/2 -705, ALLEGRO_ALIGN_CENTRE, "AJUDA");
+
 
             //botão ajuste
             al_draw_bitmap(botao_ajuste, LARGURA_TELA - al_get_bitmap_width(botao_ajuste) - 1250,
             ALTURA_TELA - al_get_bitmap_height(botao_ajuste) - 690 , 0);
+            al_draw_bitmap(engrenagem, LARGURA_TELA - al_get_bitmap_width(botao_ajuste) - 1250,
+            ALTURA_TELA - al_get_bitmap_height(botao_ajuste) - 690 , 0);
 
-            al_draw_text(fonte, al_map_rgb(255, 255, 255), 20, ALTURA_TELA-80, ALLEGRO_ALIGN_LEFT, "Feito por: Ana Luisa Holthausen de Carvalho e Luc Joffily Ribas");
+            al_draw_text(fonte, al_map_rgb(255, 255, 0), 20, ALTURA_TELA-80, ALLEGRO_ALIGN_LEFT, "Feito por: Ana Luisa Holthausen de Carvalho e Luc Joffily Ribas");
         }
         if(tela == 2){
             if(clic_botao_controle){
@@ -289,7 +306,7 @@ int inicio(ALLEGRO_DISPLAY *janela, ALLEGRO_AUDIO_STREAM *musica, ALLEGRO_EVENT_
 
             al_set_target_bitmap(botao_ajuda);
             if(!no_botao_ajuda){
-                al_clear_to_color(al_map_rgb(255, 0, 0));
+                al_clear_to_color(al_map_rgb(255, 255, 255));
             }
             else{
                 al_clear_to_color(al_map_rgb(255, 0, 200));
@@ -316,6 +333,8 @@ int inicio(ALLEGRO_DISPLAY *janela, ALLEGRO_AUDIO_STREAM *musica, ALLEGRO_EVENT_
             //botão sair
             al_draw_bitmap(botao_ajuda, LARGURA_TELA - al_get_bitmap_width(botao_ajuda) - 10,
             ALTURA_TELA - al_get_bitmap_height(botao_ajuda) - 690 , 0);
+            al_draw_text(fonte, al_map_rgb(50, 50, 50), LARGURA_TELA - al_get_bitmap_width(botao_ajuda)/2 - 10,
+            ALTURA_TELA - al_get_bitmap_height(botao_ajuda)/2 -705, ALLEGRO_ALIGN_CENTRE, "VOLTA");
 
             //botão controle
             al_draw_bitmap(botao_controle, 140, 100, 0);
@@ -331,7 +350,7 @@ int inicio(ALLEGRO_DISPLAY *janela, ALLEGRO_AUDIO_STREAM *musica, ALLEGRO_EVENT_
         if(tela == 3){
             al_set_target_bitmap(botao_ajuda);
             if(!no_botao_ajuda){
-                al_clear_to_color(al_map_rgb(255, 0, 0));
+                al_clear_to_color(al_map_rgb(255, 255, 255));
             }
             else{
                 al_clear_to_color(al_map_rgb(255, 0, 200));
@@ -361,6 +380,8 @@ int inicio(ALLEGRO_DISPLAY *janela, ALLEGRO_AUDIO_STREAM *musica, ALLEGRO_EVENT_
             //botão fechar
             al_draw_bitmap(botao_ajuda, LARGURA_TELA - al_get_bitmap_width(botao_ajuda) - 10,
             ALTURA_TELA - al_get_bitmap_height(botao_ajuda) - 690 , 0);
+            al_draw_text(fonte, al_map_rgb(50, 50, 50), LARGURA_TELA - al_get_bitmap_width(botao_ajuda)/2 - 10,
+            ALTURA_TELA - al_get_bitmap_height(botao_ajuda)/2 -705, ALLEGRO_ALIGN_CENTRE, "VOLTA");
 
             //botão 1 jogador
             al_draw_bitmap(botao_jogador, LARGURA_TELA / 2 - al_get_bitmap_width(botao_jogador) / 2,
@@ -399,6 +420,10 @@ int inicio(ALLEGRO_DISPLAY *janela, ALLEGRO_AUDIO_STREAM *musica, ALLEGRO_EVENT_
     al_destroy_bitmap(botao_musica);
     al_destroy_bitmap(botao_controle);
     al_destroy_bitmap(botao_jogabilidade);
+    al_destroy_bitmap(fundo_jogabilidade);
+    al_destroy_bitmap(fundo_controle);
+    al_destroy_bitmap(engrenagem);
+    al_destroy_bitmap(fundo_inicio);
 
     if (!xis) return 0;
     else return 2;

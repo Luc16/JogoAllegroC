@@ -25,6 +25,7 @@ ALLEGRO_DISPLAY *janela = NULL;
 ALLEGRO_EVENT_QUEUE *fila_eventos = NULL;
 ALLEGRO_BITMAP *fundo = NULL;
 ALLEGRO_FONT *fonte = NULL;
+ALLEGRO_FONT *fonte0 = NULL;
 ALLEGRO_FONT *fonte2 = NULL;
 ALLEGRO_FONT *fonte3 = NULL;
 ALLEGRO_FONT *fonte4 = NULL;
@@ -84,9 +85,15 @@ bool inicializar(){
         return false;
     }
 
-    al_set_window_title(janela, "Patolindo e seu amigo X 2020");
+    al_set_window_title(janela, "Patolindo e Bobola X 2020");
 
-    fonte = al_load_font("Roboto-Regular.ttf", 50, 0);
+    fonte = al_load_font("Roboto-Regular.ttf", 40, 0);
+    if (!fonte){
+        fprintf(stderr, "Falha ao carregar \"fonte Roboto-Regular.ttf\".\n");
+        al_destroy_display(janela);
+        return false;
+    }
+    fonte0 = al_load_font("Roboto-Regular.ttf", 80, 0);
     if (!fonte){
         fprintf(stderr, "Falha ao carregar \"fonte Roboto-Regular.ttf\".\n");
         al_destroy_display(janela);
@@ -163,16 +170,16 @@ bool inicializar(){
 }
 
 int main(){
-    int var_inicio = 0, var_podio = 0, var_jogo = 0, num_jogs = 2;
+    int var_inicio = 0, var_podio = 0, var_jogo = 0, num_jogs = 2, pontos = 0;
     bool sair = false;
     if (!inicializar()) return -1;
 
     while(!sair){
-        var_inicio = inicio(janela, musica, fila_eventos, fonte2, evento, &num_jogs);
+        var_inicio = inicio(janela, musica, fila_eventos, fonte2, fonte0, evento, &num_jogs);
         if (var_inicio != 2){
-            var_jogo = jogo(janela, fila_eventos, fundo, fonte3, fonte4, evento, temporizador, num_jogs);
+            var_jogo = jogo(janela, fila_eventos, fundo, fonte3, fonte4, evento, temporizador, num_jogs, &pontos);
             if (var_jogo != 2)
-                var_podio = podio(100, janela, fila_eventos, fonte, evento);
+                var_podio = podio(pontos, janela, fila_eventos, fonte, evento, temporizador);
         }
         if (var_inicio == 2 || var_jogo == 2 || var_podio == 2)
             sair = true;

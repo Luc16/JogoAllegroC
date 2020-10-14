@@ -91,17 +91,21 @@ bool valida_nome(char nome[], TopJogador top[]){
   else return false;
 }
 
-int podio(int pontuacao, ALLEGRO_DISPLAY *janela, ALLEGRO_EVENT_QUEUE *fila_eventos, ALLEGRO_FONT *fonte,  ALLEGRO_EVENT evento){
+int podio(int pontuacao, ALLEGRO_DISPLAY *janela, ALLEGRO_EVENT_QUEUE *fila_eventos, ALLEGRO_FONT *fonte,  ALLEGRO_EVENT evento, ALLEGRO_TIMER *temporizador){
   // variáveis básicas
   CURL *curl;
   CURLcode res;
   char nome[17] = "", json[500];
-  bool sair = false, concluido = false, xis = false;
+  bool sair = false, concluido = false, xis = false, redesenhar = false;
+  ALLEGRO_BITMAP *podio = al_load_bitmap("Images/Podio.png");
   int num_parsed, i, j = 0;
   TopJogador top[NUM_PODIO]; 
   jsmn_parser parser;
   jsmntok_t t[128];
 
+  if (!podio){
+      fprintf(stderr, "Falha ao carregar imagem do podio.\n");
+    }
   // iniciando o parser de json, o curl e o allegro
   jsmn_init(&parser);
   curl = curl_easy_init();
@@ -137,30 +141,40 @@ int podio(int pontuacao, ALLEGRO_DISPLAY *janela, ALLEGRO_EVENT_QUEUE *fila_even
     qsort(top, NUM_PODIO-1, sizeof top[0], comparador);
 
     while(!sair){
-      // desenho
-      al_clear_to_color(al_map_rgb(0, 0, 0));
-      if (pontuacao <= top[NUM_PODIO-2].pontos) concluido = true;
-      if (!concluido){
-        exibir_texto_centralizado(nome, fonte);
-        al_draw_text(fonte, al_map_rgb(255, 255, 255), LARGURA_TELA / 2,
-          (ALTURA_TELA / 2 - al_get_font_ascent(fonte)) / 2,
-          ALLEGRO_ALIGN_CENTRE, "Parabéns pela pontuação! Nome:");
-      } else {
-        // al_draw_bitmap(fundo, 0, 0, 0);
-        for (i = 0; i < NUM_PODIO-1; i++){
-          al_draw_textf(fonte, al_map_rgb(255, 255, 255), LARGURA_TELA / 2, 200+60*i, ALLEGRO_ALIGN_CENTRE,
-           "O(A) jogador(a) %s ficou em %do lugar, com %d pontos", top[i].nome, i+1, top[i].pontos); // DESENHAR PÓDIO
-        }
-        al_draw_textf(fonte, al_map_rgb(255, 255, 255), LARGURA_TELA / 2, 200+60*6, ALLEGRO_ALIGN_CENTRE,
-           "Voce ficou com %d pontos", pontuacao);
-        al_draw_textf(fonte, al_map_rgb(255, 255, 255), LARGURA_TELA / 2, ALTURA_TELA-100, ALLEGRO_ALIGN_CENTRE,
-           "(Aperte espaço para voltar para o inicio)");
-      }
-      al_flip_display();
-      
-      // colocando isso depois do desenho para desenhar sem ter que mandar nenhum evento
       al_wait_for_event(fila_eventos, &evento);
 
+      if (evento.type == ALLEGRO_EVENT_TIMER){
+        redesenhar = true;
+      }
+        // checa se entra no podio
+        if (pontuacao > top[NUM_PODIO-2].pontos){
+          top[5].pontos = pontuacao;
+          if(!concluido){
+            // escreve o nome
+            manipular_entrada(evento, nome);
+            if (evento.type == ALLEGRO_EVENT_KEY_DOWN && evento.keyboard.keycode == ALLEGRO_KEY_ENTER){
+              // valida o nome e escreve coloca ele como top e ordena o vetor
+              if(valida_nome(nome, top)){
+                concluido = true;
+                strcpy(top[5].nome, nome);
+                qsort(top, NUM_PODIO, sizeof top[0], comparador);
+
+                // coloca no servidor
+                sprintf(json, "{ \"%s\": %d, \"%s\": %d, \"%s\": %d, \"%s\": %d, \"%s\": %d }", top[0].nome, top[0].pontos, 
+                  top[1].nome, top[1].pontos, top[2].nome, top[2].pontos, top[3].nome, top[3].pontos, top[4].nome, top[4].pontos);
+                curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "PUT"); 
+                curl_easy_setopt(curl, CURLOPT_POSTFIELDS, json);
+                res = curl_easy_perform(curl);
+              } else {
+                // caso o nome seja inválido
+                al_show_native_message_box(NULL,"Alerta","Alerta",
+                      "Esse nome já foi utilizado, tente colocar outro",
+                          NULL,ALLEGRO_MESSAGEBOX_OK_CANCEL);
+              }
+            }
+          }
+        }
+      
       if (evento.type == ALLEGRO_EVENT_DISPLAY_CLOSE){
         sair = true;
         xis = true;
@@ -170,34 +184,35 @@ int podio(int pontuacao, ALLEGRO_DISPLAY *janela, ALLEGRO_EVENT_QUEUE *fila_even
           sair = true;
         }
       }
+      if(redesenhar && al_is_event_queue_empty(fila_eventos)){
+      // desenho
+        al_clear_to_color(al_map_rgb(0, 0, 0));
+        if (pontuacao <= top[NUM_PODIO-2].pontos) concluido = true;
+        if (!concluido){
+          exibir_texto_centralizado(nome, fonte);
+          al_draw_text(fonte, al_map_rgb(255, 255, 255), LARGURA_TELA / 2,
+            (ALTURA_TELA / 2 - al_get_font_ascent(fonte)) / 2,
+            ALLEGRO_ALIGN_CENTRE, "Parabéns pela pontuação! Nome:");
+        } else {
+          al_draw_bitmap(podio, 0, 0, 0);
+          // DESENHAR PÓDIO
+          al_draw_multiline_textf(fonte, al_map_rgb(255, 255, 255), LARGURA_TELA / 2, 270, 2000, 40, ALLEGRO_ALIGN_CENTRE,
+          "%s: \n%d", top[0].nome, top[0].pontos); 
+          al_draw_multiline_textf(fonte, al_map_rgb(255, 255, 255), LARGURA_TELA / 2 - 215, 370, 2000, 40, ALLEGRO_ALIGN_CENTRE,
+          "%s: \n%d", top[1].nome, top[1].pontos); 
+          al_draw_multiline_textf(fonte, al_map_rgb(255, 255, 255), LARGURA_TELA / 2 + 215, 370, 2000, 40, ALLEGRO_ALIGN_CENTRE,
+          "%s: \n%d", top[2].nome, top[2].pontos); 
+          al_draw_multiline_textf(fonte, al_map_rgb(255, 255, 255), LARGURA_TELA / 2 - 450, 470, 2000, 40, ALLEGRO_ALIGN_CENTRE,
+          "%s: \n%d", top[3].nome, top[3].pontos); 
+          al_draw_multiline_textf(fonte, al_map_rgb(255, 255, 255), LARGURA_TELA / 2 + 445, 470, 2000, 40, ALLEGRO_ALIGN_CENTRE,
+          "%s: \n%d", top[4].nome, top[4].pontos); 
 
-      // checa se entra no podio
-      if (pontuacao > top[NUM_PODIO-2].pontos){
-        top[5].pontos = pontuacao;
-        if(!concluido){
-          // escreve o nome
-          manipular_entrada(evento, nome);
-          if (evento.type == ALLEGRO_EVENT_KEY_DOWN && evento.keyboard.keycode == ALLEGRO_KEY_ENTER){
-            // valida o nome e escreve coloca ele como top e ordena o vetor
-            if(valida_nome(nome, top)){
-              concluido = true;
-              strcpy(top[5].nome, nome);
-              qsort(top, NUM_PODIO, sizeof top[0], comparador);
-
-              // coloca no servidor
-              sprintf(json, "{ \"%s\": %d, \"%s\": %d, \"%s\": %d, \"%s\": %d, \"%s\": %d }", top[0].nome, top[0].pontos, 
-                top[1].nome, top[1].pontos, top[2].nome, top[2].pontos, top[3].nome, top[3].pontos, top[4].nome, top[4].pontos);
-              curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "PUT"); 
-              curl_easy_setopt(curl, CURLOPT_POSTFIELDS, json);
-              res = curl_easy_perform(curl);
-            } else {
-              // caso o nome seja inválido
-              al_show_native_message_box(NULL,"Alerta","Alerta",
-                    "Esse nome já foi utilizado, tente colocar outro",
-                        NULL,ALLEGRO_MESSAGEBOX_OK_CANCEL);
-            }
-          }
+          // texto de voltar
+          al_draw_textf(fonte, al_map_rgb(255, 255, 255), LARGURA_TELA / 2, ALTURA_TELA-80, ALLEGRO_ALIGN_CENTRE,
+            "(Aperte espaço para voltar para o inicio)");
         }
+        al_flip_display();
+
       }  
     }
     // curl -X PUT -d '{ "Luc": 120, "Gil": 100, "Ana": 130, "Mariana": 125, "Ian": 80 }' 'https://jogoallegro.firebaseio.com/podio.json'

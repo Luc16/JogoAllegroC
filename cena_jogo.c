@@ -86,7 +86,7 @@ void mover_tela(Jogador jogs[], Corona covs[], Alcool alcools[], Minion minions[
   }
 }
 
-// colisoes
+// colisoes plataformas
 bool jog_colidindo(float x_esquerda, float x_direita, float y_cima, float y_baixo, Jogador *jog){
     return jog->pos_jogador.y - jog->pos_jogador.altura < y_baixo &&
      jog->pos_jogador.y + jog->pos_jogador.altura > y_cima &&
@@ -139,14 +139,18 @@ void jog_colisao_geral(float plataformas[], Jogador *jog, float mov_tela, bool *
 
 void desenhar_plataformas(float plataformas[][4], float plataformas_mortais[][4], float mov_tela){
   int i;
-  for (i = 0; i < NUM_PLATAFORMAS; i++)
-    al_draw_filled_rectangle(plataformas[i][0]-mov_tela, plataformas[i][1], plataformas[i][2]-mov_tela, plataformas[i][3], al_map_rgb(51, 0, 102));
-  for (i = 0; i < NUM_PLATAFORMAS_MORTAIS; i++)
-    al_draw_filled_rectangle(plataformas_mortais[i][0]-mov_tela, plataformas_mortais[i][1], plataformas_mortais[i][2]-mov_tela, plataformas_mortais[i][3], al_map_rgb(255, 255, 255));
+  for (i = 0; i < NUM_PLATAFORMAS; i++){
+    if (!(plataformas[i][0]-mov_tela > LARGURA_TELA || plataformas[i][2]-mov_tela < 0))
+      al_draw_filled_rectangle(plataformas[i][0]-mov_tela, plataformas[i][1], plataformas[i][2]-mov_tela, plataformas[i][3], al_map_rgb(51, 0, 102));
+  }
+  for (i = 0; i < NUM_PLATAFORMAS_MORTAIS; i++){
+    if (!(plataformas_mortais[i][0]-mov_tela > LARGURA_TELA || plataformas_mortais[i][2]-mov_tela < 0))
+      al_draw_filled_rectangle(plataformas_mortais[i][0]-mov_tela, plataformas_mortais[i][1], plataformas_mortais[i][2]-mov_tela, plataformas_mortais[i][3], al_map_rgb(255, 255, 255));
+  }
 
 }
 
-// colisoes mortais
+// colisoes mortais plataformas
 bool jog_colidindo_mortal(float x_esquerda, float x_direita, float y_cima, float y_baixo, Jogador *jog){
     return jog->pos_jogador.y - jog->pos_jogador.col_altura < y_baixo &&
      jog->pos_jogador.y + jog->pos_jogador.col_altura > y_cima &&
@@ -204,10 +208,19 @@ void minion_iniciar(Minion minions[], float pos[][5]){
 		minions[i].pos_minion.x = pos[i][0];
 		minions[i].pos_minion.y = pos[i][1];
 		minions[i].pos_minion.col_altura = 20;
-		minions[i].pos_minion.col_largura = 20;
+		minions[i].pos_minion.col_largura = 10;
 		minions[i].limite1 = pos[i][2];
 		minions[i].limite2 = pos[i][3];
 		minions[i].lado = 1;
+    minions[i].reg_x = 0; 
+    minions[i].reg_y = 64; 
+    minions[i].espera = 5; 
+    minions[i].i_frames = 0;
+    minions[i].atual = 0;
+    minions[i].bm_minion = al_load_bitmap("Images/Minions.png");
+    if (!minions[i].bm_minion){
+      fprintf(stderr, "Falha ao carregar imagem do minion.\n");
+    }
 	}
 }
 
@@ -264,7 +277,19 @@ void minion_desenhar(Minion minions[]){
   int i;
   for (i = 0; i < NUM_MINIONS; i++)
   if(!minions[i].morto){
-    al_draw_filled_circle(minions[i].pos_minion.x, minions[i].pos_minion.y, 30, al_map_rgb(255, 255, 255));
+    minions[i].i_frames++;
+    if (minions[i].i_frames >= minions[i].espera){
+        minions[i].atual++;
+        if(minions[i].atual >= MAX_DESENHO_MINION){
+          minions[i].atual = 0;
+        }
+        minions[i].reg_x = minions[i].atual*48;
+        minions[i].i_frames = 0;
+    }
+    if (minions[i].lado == -1)
+      al_draw_tinted_scaled_rotated_bitmap_region(minions[i].bm_minion, minions[i].reg_x, minions[i].reg_y, 48, 64, al_map_rgb(255, 255, 255), 0, 0, minions[i].pos_minion.x-40, minions[i].pos_minion.y-64, 1.5, 1.5, 0, 0);
+    else 
+      al_draw_tinted_scaled_rotated_bitmap_region(minions[i].bm_minion, minions[i].reg_x, minions[i].reg_y, 48, 64, al_map_rgb(255, 255, 255), 0, 0, minions[i].pos_minion.x-40, minions[i].pos_minion.y-64, 1.5, 1.5, 0, ALLEGRO_FLIP_HORIZONTAL);
   }
 }
 
@@ -542,7 +567,7 @@ void alcool_atualizar(Alcool alcools[], Jogador jogs[], Corona covs[]){
           }
         }
       } else if (alcools[j].esguichando){
-        if (alcools[j].i_esg >= 10){
+        if (alcools[j].i_esg >= 30){
           alcools[j].morto = true;
           for(i = 0; i < NUM_JOGADORES; i++){
             if(jogs[i].com_alcool == j){
@@ -671,7 +696,10 @@ void jog_desenhar(Jogador jogs[], int *i_desenho, int *espera, int *desenho_atua
         }
         *i_desenho = 0;
       }
-      al_draw_bitmap(pato_pulando[*desenho_atual], jogs[0].pos_jogador.x - 30, jogs[0].pos_jogador.y - 30, 0);
+      if(jogs[0].lado == 1)
+        al_draw_bitmap(pato_pulando[*desenho_atual], jogs[0].pos_jogador.x - 30, jogs[0].pos_jogador.y - 30, 0);
+      else 
+        al_draw_bitmap(pato_pulando[*desenho_atual], jogs[0].pos_jogador.x - 30, jogs[0].pos_jogador.y - 30, ALLEGRO_FLIP_HORIZONTAL);
     }
     else if(jogs[0].mov_direita){
       if(*desenho_atual >= MAX_DESENHO_ANDANDO)
@@ -804,15 +832,16 @@ void soltar_botao(ALLEGRO_EVENT evento, Jogador jogs[]){
   }
 }
 
-int jogo(ALLEGRO_DISPLAY *janela, ALLEGRO_EVENT_QUEUE *fila_eventos, ALLEGRO_BITMAP *fundo, ALLEGRO_FONT *fonte,  ALLEGRO_FONT *fonte2, ALLEGRO_EVENT evento, ALLEGRO_TIMER *temporizador, int num_jogs){
+int jogo(ALLEGRO_DISPLAY *janela, ALLEGRO_EVENT_QUEUE *fila_eventos, ALLEGRO_BITMAP *fundo, ALLEGRO_FONT *fonte,  ALLEGRO_FONT *fonte2, ALLEGRO_EVENT evento, ALLEGRO_TIMER *temporizador, int num_jogs, int *pontuacao){
   // variaveis iniciais
   Jogador jogadores[NUM_JOGADORES];
   Corona covid[NUM_CORONAS];
   Alcool alcools[NUM_ALCOOLS];
   Minion minions[NUM_MINIONS];
   ALLEGRO_BITMAP *pato_parado[MAX_DESENHO_PARADO], *pato_pulando[MAX_DESENHO_PULANDO], *pato_andando[MAX_DESENHO_ANDANDO];
+  *pontuacao = 0;
   char local[100];
-  int k_alcool_chefao = 6, i_desenho = 0, espera = 5, desenho_atual = 0;
+  int k_alcool_chefao = 6, i_desenho = 0, espera = 5, desenho_atual = 0, tempo = 0, i;
   float mov_tela = 0;
   bool sair = false, fim = false, atualizar_e_desenho = false, xis = false;
   float plataformas[NUM_PLATAFORMAS][4] = {
@@ -938,6 +967,7 @@ int jogo(ALLEGRO_DISPLAY *janela, ALLEGRO_EVENT_QUEUE *fila_eventos, ALLEGRO_BIT
   corona_iniciar(covid, corona_pos);
   minion_iniciar(minions, minions_pos);
 
+  // para quando for selecionado 1 jogador
   if (num_jogs == 1) jogadores[1].morto = true;
 
   al_draw_bitmap(fundo, 0, 0, 0);
@@ -946,6 +976,7 @@ int jogo(ALLEGRO_DISPLAY *janela, ALLEGRO_EVENT_QUEUE *fila_eventos, ALLEGRO_BIT
     al_wait_for_event(fila_eventos, &evento);
 
     if (evento.type == ALLEGRO_EVENT_TIMER){
+      tempo++;
       mover_tela(jogadores, covid, alcools, minions, &mov_tela);
       jog_atualizar_pos_anterior(jogadores);
       atualizar_e_desenho = true;
@@ -987,6 +1018,7 @@ int jogo(ALLEGRO_DISPLAY *janela, ALLEGRO_EVENT_QUEUE *fila_eventos, ALLEGRO_BIT
       // ganhar o jogo 
       if (covid[4].morto && covid[5].morto && covid[6].morto && covid[7].morto && covid[8].morto && covid[9].morto){
         al_draw_text(fonte, al_map_rgb(255, 0, 0), LARGURA_TELA/2, ALTURA_TELA/2-100, ALLEGRO_ALIGN_CENTRE, "VOCE VENCEU O JOGO");
+        pontuacao += 200000;
         fim = true;
       }
       // acabar o jogo
@@ -996,15 +1028,33 @@ int jogo(ALLEGRO_DISPLAY *janela, ALLEGRO_EVENT_QUEUE *fila_eventos, ALLEGRO_BIT
       }
       // morte
       if (jogadores[0].morto && jogadores[1].morto){
-        al_draw_text(fonte, al_map_rgb(255, 0, 0), LARGURA_TELA/2, ALTURA_TELA/2-100, ALLEGRO_ALIGN_CENTRE, "VOCE PERDEU O JOGO");
-        al_draw_text(fonte, al_map_rgb(255, 0, 0), LARGURA_TELA/2, ALTURA_TELA/2, ALLEGRO_ALIGN_CENTRE, "(Quando voce deixa seu amigo");
-        al_draw_text(fonte, al_map_rgb(255, 0, 0), LARGURA_TELA/2, ALTURA_TELA/2+100, ALLEGRO_ALIGN_CENTRE, "para tras, os dois perdem)");
+        al_draw_text(fonte, al_map_rgb(255, 0, 0), LARGURA_TELA/2, ALTURA_TELA/2-150, ALLEGRO_ALIGN_CENTRE, "VOCE PERDEU O JOGO");
+        al_draw_text(fonte, al_map_rgb(255, 0, 0), LARGURA_TELA/2, ALTURA_TELA/2-50, ALLEGRO_ALIGN_CENTRE, "(Quando voce deixa seu amigo");
+        al_draw_text(fonte, al_map_rgb(255, 0, 0), LARGURA_TELA/2, ALTURA_TELA/2+50, ALLEGRO_ALIGN_CENTRE, "para tras, os dois perdem)");
         fim = true;
       }
 
       al_flip_display();
     }
   }
+  for (i = 0; i < NUM_ALCOOLS; i++){
+    al_destroy_bitmap(alcools[i].bm_alcool);
+    al_destroy_bitmap(alcools[i].bm_esguicho);
+  }
+  for (i = 0; i < NUM_CORONAS; i++){
+    al_destroy_bitmap(covid[i].bm_corona);
+  }
+  for (i = 0; i < MAX_DESENHO_PULANDO; i++){
+    if (i < MAX_DESENHO_ANDANDO)
+      al_destroy_bitmap(pato_andando[i]);
+    if (i < MAX_DESENHO_PARADO)
+      al_destroy_bitmap(pato_parado[i]);
+    al_destroy_bitmap(pato_pulando[i]);
+  }
+  for (i = 0; i < NUM_MINIONS; i++){
+    al_destroy_bitmap(minions[i].bm_minion);
+  }
+  *pontuacao += (int) mov_tela - tempo/30;
 
   if (xis) return 2;
   else return 0;

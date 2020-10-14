@@ -5,6 +5,7 @@
 #define NUM_PLATAFORMAS_MORTAIS 1
 #define NUM_ALCOOLS 26
 #define NUM_MINIONS 16
+#define MAX_DESENHO_MINION 4
 #define MAX_DESENHO_PARADO 12
 #define MAX_DESENHO_PULANDO 21
 #define MAX_DESENHO_ANDANDO 8
@@ -59,6 +60,8 @@ typedef struct Struct_Minion{
     float limite2;
     int lado;
     bool morto;
+    ALLEGRO_BITMAP *bm_minion;
+    int reg_x, reg_y, espera, i_frames, atual; 
 
 } Minion;
 
@@ -120,4 +123,4 @@ void jog_desenhar(Jogador jogs[], int *i_desenho, int *espera, int *desenho_atua
 void apertar_botao(ALLEGRO_EVENT evento, Jogador jogs[], Alcool alcools[], float mover_tela);
 void soltar_botao(ALLEGRO_EVENT evento, Jogador jogs[]);
 
-int jogo(ALLEGRO_DISPLAY *janela, ALLEGRO_EVENT_QUEUE *fila_eventos, ALLEGRO_BITMAP *fundo, ALLEGRO_FONT *fonte,  ALLEGRO_FONT *fonte2, ALLEGRO_EVENT evento, ALLEGRO_TIMER *temporizador, int num_jogs);
+int jogo(ALLEGRO_DISPLAY *janela, ALLEGRO_EVENT_QUEUE *fila_eventos, ALLEGRO_BITMAP *fundo, ALLEGRO_FONT *fonte,  ALLEGRO_FONT *fonte2, ALLEGRO_EVENT evento, ALLEGRO_TIMER *temporizador, int num_jogs, int *pontuacao);
