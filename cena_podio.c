@@ -17,71 +17,6 @@
 #define NUM_PODIO 6
 #define FPS 60
 
-// ALLEGRO_DISPLAY *janela = NULL;
-// ALLEGRO_EVENT_QUEUE *fila_eventos = NULL;
-// ALLEGRO_BITMAP *fundo = NULL;
-// ALLEGRO_FONT *fonte = NULL;
-// ALLEGRO_EVENT evento;
-// char *plano_de_fundo = "Images/podio.jpg";
-
-/*bool inicializar(){
-  if (!al_init()){
-    fprintf(stderr, "Falha ao inicializar a Allegro.\n");
-    return false;
-  }
- 
-  al_init_font_addon();
-  if (!al_init_ttf_addon()){
-    fprintf(stderr, "Falha ao inicializar add-on allegro_ttf.\n");
-    return false;
-  }
- 
-  if (!al_init_image_addon()){
-    fprintf(stderr, "Falha ao inicializar add-on allegro_image.\n");
-    return false;
-  }
- 
-  if (!al_install_keyboard()){
-    fprintf(stderr, "Falha ao inicializar o teclado.\n");
-    return false;
-  }
- 
-  janela = al_create_display(LARGURA_TELA, ALTURA_TELA);
-  if (!janela){
-    fprintf(stderr, "Falha ao criar janela.\n");
-    return false;
-  }
- 
-  al_set_window_title(janela, "Joguinho");
- 
-  fonte = al_load_font("Roboto-Regular.ttf", 50, 0);
-  if (!fonte){
-    fprintf(stderr, "Falha ao carregar \"fonte Roboto-Regular.ttf\".\n");
-    al_destroy_display(janela);
-    return false;
-  }
- 
-  fila_eventos = al_create_event_queue();
-  if (!fila_eventos){
-    fprintf(stderr, "Falha ao criar fila de eventos.\n");
-    al_destroy_display(janela);
-    return false;
-  }
- 
-  // fundo = al_load_bitmap(plano_de_fundo);
-  // if (!fundo){
-  //   fprintf(stderr, "Falha ao carregar imagem de fundo.\n");
-  //   al_destroy_display(janela);
-  //   al_destroy_event_queue(fila_eventos);
-  //   return false;
-  // }
- 
-  al_register_event_source(fila_eventos, al_get_keyboard_event_source());
-  al_register_event_source(fila_eventos, al_get_display_event_source(janela));
- 
-  return true;
-}*/
-
 void iniciar_string(String *s) {
   s->len = 0;
   s->ptr = malloc(s->len+1);
@@ -161,7 +96,7 @@ int podio(int pontuacao, ALLEGRO_DISPLAY *janela, ALLEGRO_EVENT_QUEUE *fila_even
   CURL *curl;
   CURLcode res;
   char nome[17] = "", json[500];
-  bool sair = false, concluido = false;
+  bool sair = false, concluido = false, xis = false;
   int num_parsed, i, j = 0;
   TopJogador top[NUM_PODIO]; 
   jsmn_parser parser;
@@ -218,14 +153,23 @@ int podio(int pontuacao, ALLEGRO_DISPLAY *janela, ALLEGRO_EVENT_QUEUE *fila_even
         }
         al_draw_textf(fonte, al_map_rgb(255, 255, 255), LARGURA_TELA / 2, 200+60*6, ALLEGRO_ALIGN_CENTRE,
            "Voce ficou com %d pontos", pontuacao);
+        al_draw_textf(fonte, al_map_rgb(255, 255, 255), LARGURA_TELA / 2, ALTURA_TELA-100, ALLEGRO_ALIGN_CENTRE,
+           "(Aperte espaço para voltar para o inicio)");
       }
       al_flip_display();
       
       // colocando isso depois do desenho para desenhar sem ter que mandar nenhum evento
       al_wait_for_event(fila_eventos, &evento);
 
-      if (evento.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
+      if (evento.type == ALLEGRO_EVENT_DISPLAY_CLOSE){
         sair = true;
+        xis = true;
+      }
+      if (concluido){
+        if (evento.type == ALLEGRO_EVENT_KEY_DOWN && evento.keyboard.keycode == ALLEGRO_KEY_SPACE){
+          sair = true;
+        }
+      }
 
       // checa se entra no podio
       if (pontuacao > top[NUM_PODIO-2].pontos){
@@ -254,7 +198,7 @@ int podio(int pontuacao, ALLEGRO_DISPLAY *janela, ALLEGRO_EVENT_QUEUE *fila_even
             }
           }
         }
-      } 
+      }  
     }
     // curl -X PUT -d '{ "Luc": 120, "Gil": 100, "Ana": 130, "Mariana": 125, "Ian": 80 }' 'https://jogoallegro.firebaseio.com/podio.json'
     // curl -X POST -d '{"Luc" : 120}' \https://jogoallegro.firebaseio.com/podio.json
@@ -264,5 +208,6 @@ int podio(int pontuacao, ALLEGRO_DISPLAY *janela, ALLEGRO_EVENT_QUEUE *fila_even
     /* always cleanup */
     curl_easy_cleanup(curl);
   }
-  return 0;
+  if (xis) return 2;
+  else return 0;
 }

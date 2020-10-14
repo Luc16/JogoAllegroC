@@ -1,101 +1,198 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include "jsmn/jsmn.h"
-#include <curl/curl.h>
+#include <allegro5/allegro.h>
+#include <allegro5/allegro_primitives.h>
+#include <allegro5/allegro_image.h>
 
-const int num_podio = 5;
+enum KEYS{ UP, DOWN, LEFT, RIGHT};
 
-struct top_jogador{
-    int idx;
-    int pontos;
-    char nome[30];
-};
-
-struct string {
-  char *ptr;
-  size_t len;
-};
-
-void init_string(struct string *s) {
-  s->len = 0;
-  s->ptr = malloc(s->len+1);
-  if (s->ptr == NULL) {
-    fprintf(stderr, "malloc() failed\n");
-    exit(EXIT_FAILURE);
-  }
-  s->ptr[0] = '\0';
-}
-
-size_t writefunc(void *ptr, size_t size, size_t nmemb, struct string *s)
+int main()
 {
-  size_t new_len = s->len + size*nmemb;
-  s->ptr = realloc(s->ptr, new_len+1);
-  if (s->ptr == NULL) {
-    fprintf(stderr, "realloc() failed\n");
-    exit(EXIT_FAILURE);
-  }
-  memcpy(s->ptr+s->len, ptr, size*nmemb);
-  s->ptr[new_len] = '\0';
-  s->len = new_len;
+	int largura = 640;
+	int altura = 480;
+    char local[500];
+	int i;
 
-  return size*nmemb;
-}
 
-int comparator (const struct top_jogador* lhs, const struct top_jogador* rhs){
-    return -(lhs->pontos - rhs->pontos);
-}
+	bool sair = false;
+	int pos_x = largura / 2;
+	int pos_y = altura / 2;
 
-int main(void)
-{
-  CURL *curl;
-  CURLcode res;
-  int num_parsed, i, j = 0, k;
-  struct top_jogador top[num_podio]; 
-  jsmn_parser parser;
-  jsmntok_t t[128];
+	const int max_desenho_parado = 12;
+	const int max_desenho_pulando = 21;
+	const int max_desenho_andando = 8;
+	int desenho_atual = 0;
+	int i_desenho = 0;
+    int espera = 5;
+    //int espera_pulando = 10;
 
-  jsmn_init(&parser);
-  curl = curl_easy_init();
-  if(curl) {
-    struct string s;
-    init_string(&s);
+	bool keys[4] = {false, false, false, false};
 
-    curl_easy_setopt(curl, CURLOPT_URL, "https://jogoallegro.firebaseio.com/podio.json");
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writefunc);
-    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &s);
-    res = curl_easy_perform(curl);
+    ALLEGRO_DISPLAY *display = NULL;
+	ALLEGRO_EVENT_QUEUE *event_queue = NULL;
+	ALLEGRO_TIMER *timer;
+	ALLEGRO_BITMAP *pato_parado[max_desenho_parado], *pato_pulando[max_desenho_pulando], *pato_andando[max_desenho_andando];
 
-    num_parsed = jsmn_parse(&parser, s.ptr, s.len, t, sizeof(t) / sizeof(t[0]));
+	if(!al_init())										//initialize Allegro
+		return -1;
 
-    if (num_parsed < 0) {
-        printf("Failed to parse JSON: %d\n", num_parsed);
-        return 1;
+	display = al_create_display(largura, altura);			//create our display object
+
+	if(!display)										//test display object
+		return -1;
+
+	al_init_primitives_addon();
+	al_install_keyboard();
+	al_init_image_addon();
+
+
+	for(i=0; i<max_desenho_parado; i++){
+        sprintf(local, "Images/pato/pato_idle/pato_idle-%d.png.png", i+1);
+        pato_parado[i] = al_load_bitmap(local);
+        if(!pato_parado[i]){
+          printf("erro");
+        }
     }
-    for (i = 1; i < num_parsed; i+=2){
-        strncpy(top[j].nome, s.ptr+t[i].start, t[i].end - t[i].start);
-        top[j].nome[t[i].end - t[i].start] = '\0';
-
-        top[j].pontos = atoi(s.ptr + t[i+1].start);
-        j++;
+    for(i=0; i<max_desenho_pulando; i++){
+        sprintf(local, "Images/pato/pato_jump/pato_jump-%d.png.png", i+1);
+        pato_pulando[i] = al_load_bitmap(local);
+        if(!pato_pulando[i]){
+          printf("erro");
+        }
     }
-    qsort(top, num_podio, sizeof top[0], comparator);
-
-    for (i = 0; i < num_podio; i++){
-        printf("O(A) jogador(a) %s ficou em %do lugar, com %d pontos\n", top[i].nome, i+1, top[i].pontos);
+    for(i=0; i<max_desenho_andando; i++){
+        sprintf(local, "Images/pato/pato_walk/pato_walk-%d.png.png", i+1);
+        pato_andando[i] = al_load_bitmap(local);
+        if(!pato_andando[i]){
+          printf("erro");
+        }
     }
 
-    curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "PUT"); /* !!! */
-    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "{ \"Luc\": 120, \"Gil\": 110, \"Ana\": 130, \"Mariana\": 125, \"Ian\": 100 }");
-    res = curl_easy_perform(curl);
+	event_queue = al_create_event_queue();
+	timer = al_create_timer(1.0/60);
 
-    // curl -X PUT -d '{ "Luc": 120, "Gil": 100, "Ana": 130, "Mariana": 125, "Ian": 80 }' 'https://jogoallegro.firebaseio.com/podio.json'
-    // curl -X POST -d '{"Luc" : 120}' \https://jogoallegro.firebaseio.com/podio.json
-    // curl -X DELETE "https://jogoallegro.firebaseio.com/podio/-MGVlHge_5-XN3vOBuLv.json"
-    free(s.ptr);
+    al_register_event_source(event_queue, al_get_timer_event_source(timer));
+	al_register_event_source(event_queue, al_get_keyboard_event_source());
+	al_register_event_source(event_queue, al_get_display_event_source(display));
+	al_start_timer(timer);
 
-    /* always cleanup */
-    curl_easy_cleanup(curl);
-  }
-  return 0;
+	while(!sair)
+	{
+		ALLEGRO_EVENT ev;
+		al_wait_for_event(event_queue, &ev);
+
+		if(ev.type == ALLEGRO_EVENT_KEY_DOWN)
+		{
+			switch(ev.keyboard.keycode)
+			{
+				case ALLEGRO_KEY_UP:
+					keys[UP] = true;
+					break;
+				case ALLEGRO_KEY_DOWN:
+					keys[DOWN] = true;
+					break;
+				case ALLEGRO_KEY_RIGHT:
+					keys[RIGHT] = true;
+					break;
+				case ALLEGRO_KEY_LEFT:
+					keys[LEFT] = true;
+					break;
+			}
+		}
+		else if(ev.type == ALLEGRO_EVENT_KEY_UP)
+		{
+			switch(ev.keyboard.keycode)
+			{
+				case ALLEGRO_KEY_UP:
+					keys[UP] = false;
+					break;
+				case ALLEGRO_KEY_DOWN:
+					keys[DOWN] = false;
+					break;
+				case ALLEGRO_KEY_RIGHT:
+					keys[RIGHT] = false;
+					break;
+				case ALLEGRO_KEY_LEFT:
+					keys[LEFT] = false;
+					break;
+				case ALLEGRO_KEY_ESCAPE:
+					sair = true;
+					break;
+			}
+		}
+		else if(ev.type == ALLEGRO_EVENT_TIMER){
+            if(keys[UP]){
+               pos_y -= keys[UP] * 10;
+               if(++i_desenho >= espera)
+               {
+                    if(++desenho_atual >= max_desenho_pulando){
+                         desenho_atual = 0;
+                    }
+                    i_desenho = 0;
+               }
+            }
+            else if(keys[RIGHT]){
+               pos_x += keys[RIGHT] * 10;
+               if(++i_desenho >= espera)
+               {
+                    if(++desenho_atual >= max_desenho_andando){
+                         desenho_atual = 0;
+                    }
+                    i_desenho = 0;
+               }
+            }
+            else if(keys[LEFT]){
+               pos_x -= keys[LEFT] * 10;
+               if(++i_desenho >= espera)
+               {
+                    if(++desenho_atual >= max_desenho_andando){
+                         desenho_atual = 0;
+                    }
+                    i_desenho = 0;
+               }
+            }
+            else{
+                if(++i_desenho >= espera){
+                    if(++desenho_atual >= max_desenho_parado)
+                    {
+                         desenho_atual = 0;
+                    }
+                i_desenho = 0;
+                }
+            }
+
+		}
+		else if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
+		{
+			sair = true;
+		}
+
+		pos_y += keys[DOWN] * 10;
+
+		// al_draw_filled_circle(pos_x + 30, pos_y + 30, 20, al_map_rgb(255, 255, 255));
+        if(keys[UP]){
+            al_draw_bitmap(pato_pulando[desenho_atual], pos_x, pos_y, 0);
+        }
+        else if(keys[RIGHT]){
+            al_draw_bitmap(pato_andando[desenho_atual], pos_x, pos_y, 0);
+        }
+        else if(keys[LEFT]){
+            al_draw_bitmap(pato_andando[desenho_atual], pos_x, pos_y, ALLEGRO_FLIP_HORIZONTAL);
+        }
+		else{
+            al_draw_bitmap(pato_parado[desenho_atual], pos_x, pos_y, 0);
+		}
+		al_flip_display();
+		al_clear_to_color(al_map_rgb(0,0,0));
+	}
+	for(i=0; i<max_desenho_parado; i++){
+        al_destroy_bitmap(pato_parado[i]);
+	}
+	for(i=0; i<max_desenho_pulando; i++){
+        al_destroy_bitmap(pato_pulando[i]);
+	}
+
+	al_destroy_event_queue(event_queue);
+	al_destroy_display(display);						//destroy our display object
+
+	return 0;
 }
