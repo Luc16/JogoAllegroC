@@ -23,7 +23,16 @@ bool botao_colisao(float Xm, float Ym, float Xc, float Yc, ALLEGRO_BITMAP *botao
 
 int inicio(ALLEGRO_DISPLAY *janela, ALLEGRO_AUDIO_STREAM *musica, ALLEGRO_EVENT_QUEUE *fila_eventos, ALLEGRO_FONT *fonte, ALLEGRO_EVENT evento, int *num_jogs){
     ALLEGRO_BITMAP *botao_ajuste = NULL, *botao_iniciar = NULL, *botao_ajuda = NULL, *botao_jogador = NULL, *botao_jogadores = NULL;
-    ALLEGRO_BITMAP *botao_musica = NULL, *botao_controle = NULL, *botao_jogabilidade = NULL;
+    ALLEGRO_BITMAP *botao_musica = NULL, *botao_controle = NULL, *botao_jogabilidade = NULL, *fundo_jogabilidade = NULL, *fundo_controle = NULL;
+
+    fundo_jogabilidade = al_load_bitmap("Images/Jogabilidade.png");
+    if (!fundo_jogabilidade){
+      fprintf(stderr, "Falha ao carregar imagem fundo_jogabilidade.\n");
+    }
+    fundo_controle = al_load_bitmap("Images/Controles.png");
+    if (!fundo_controle){
+      fprintf(stderr, "Falha ao carregar imagem fundo_controle.\n");
+    }
 
     //botão de iniciar o jogo
     botao_iniciar = al_create_bitmap(LARGURA_TELA / 5, ALTURA_TELA / 8);
@@ -272,10 +281,10 @@ int inicio(ALLEGRO_DISPLAY *janela, ALLEGRO_AUDIO_STREAM *musica, ALLEGRO_EVENT_
         }
         if(tela == 2){
             if(clic_botao_controle){
-                al_clear_to_color(al_map_rgb(255, 255, 255));
+                al_draw_bitmap(fundo_controle, 0, 0, 0);
             }
             else if(clic_botao_jogabilidade){
-                al_clear_to_color(al_map_rgb(255, 0, 0));
+                al_draw_bitmap(fundo_jogabilidade, 0, 0, 0);
             }
 
             al_set_target_bitmap(botao_ajuda);
@@ -288,18 +297,18 @@ int inicio(ALLEGRO_DISPLAY *janela, ALLEGRO_AUDIO_STREAM *musica, ALLEGRO_EVENT_
 
             al_set_target_bitmap(botao_controle);
             if(!no_botao_controle){
-                al_clear_to_color(al_map_rgb(255, 0, 0));
+                al_clear_to_color(al_map_rgb(255, 255, 255));
             }
             else{
-                al_clear_to_color(al_map_rgb(255, 0, 200));
+                al_clear_to_color(al_map_rgb(200, 200, 200));
             }
 
             al_set_target_bitmap(botao_jogabilidade);
             if(!no_botao_jogabilidade){
-                al_clear_to_color(al_map_rgb(255, 0, 0));
+                al_clear_to_color(al_map_rgb(255, 255, 255));
             }
             else{
-                al_clear_to_color(al_map_rgb(255, 0, 200));
+                al_clear_to_color(al_map_rgb(200, 200, 200));
             }
 
             al_set_target_bitmap(al_get_backbuffer(janela));

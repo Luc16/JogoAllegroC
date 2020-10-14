@@ -576,14 +576,9 @@ void alcool_desenhar(Alcool alcools[]){
   for (i = 0; i < NUM_ALCOOLS; i++){
     if (!alcools[i].morto){
       if (!alcools[i].esguichando){
-        al_draw_filled_circle(alcools[i].pos_alcool.x, alcools[i].pos_alcool.y, alcools[i].pos_alcool.altura, al_map_rgb(255, 255, 255));
         al_draw_bitmap(alcools[i].bm_alcool, alcools[i].pos_alcool.x-alcools[i].pos_alcool.largura, alcools[i].pos_alcool.y-alcools[i].pos_alcool.altura, 0);
       }
       else {
-        al_draw_filled_rectangle(alcools[i].pos_alcool.x - alcools[i].pos_alcool.col_largura,
-         alcools[i].pos_alcool.y + alcools[i].pos_alcool.col_altura,
-          alcools[i].pos_alcool.x + alcools[i].pos_alcool.col_largura,
-           alcools[i].pos_alcool.y - alcools[i].pos_alcool.col_altura, al_map_rgb(255, 255, 255));
         if (alcools[i].lado == 1)
           al_draw_bitmap(alcools[i].bm_esguicho, alcools[i].pos_alcool.x-alcools[i].pos_alcool.col_largura, alcools[i].pos_alcool.y-alcools[i].pos_alcool.col_altura, ALLEGRO_FLIP_HORIZONTAL);
         else 
