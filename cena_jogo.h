@@ -52,7 +52,6 @@ typedef struct Struct_Alcool {
 } Alcool;
 
 //estrutura minions
-
 typedef struct Struct_Minion{
     Posicao pos_minion;
     float vel;

@@ -202,26 +202,26 @@ void jog_cair(Jogador *jog){
 void minion_iniciar(Minion minions[], float pos[][5]){
     int i;
     for(i = 0; i < NUM_MINIONS; i++)
-	{
-		minions[i].vel = pos[i][4];
-		minions[i].morto = false;
-		minions[i].pos_minion.x = pos[i][0];
-		minions[i].pos_minion.y = pos[i][1];
-		minions[i].pos_minion.col_altura = 20;
-		minions[i].pos_minion.col_largura = 10;
-		minions[i].limite1 = pos[i][2];
-		minions[i].limite2 = pos[i][3];
-		minions[i].lado = 1;
-    minions[i].reg_x = 0; 
-    minions[i].reg_y = 64; 
-    minions[i].espera = 5; 
-    minions[i].i_frames = 0;
-    minions[i].atual = 0;
-    minions[i].bm_minion = al_load_bitmap("Images/Minions.png");
-    if (!minions[i].bm_minion){
-      fprintf(stderr, "Falha ao carregar imagem do minion.\n");
+    {
+      minions[i].vel = pos[i][4];
+      minions[i].morto = false;
+      minions[i].pos_minion.x = pos[i][0];
+      minions[i].pos_minion.y = pos[i][1];
+      minions[i].pos_minion.col_altura = 20;
+      minions[i].pos_minion.col_largura = 10;
+      minions[i].limite1 = pos[i][2];
+      minions[i].limite2 = pos[i][3];
+      minions[i].lado = 1;
+      minions[i].reg_x = 0; 
+      minions[i].reg_y = 64; 
+      minions[i].espera = 5; 
+      minions[i].i_frames = 0;
+      minions[i].atual = 0;
+      minions[i].bm_minion = al_load_bitmap("Images/Minions.png");
+      if (!minions[i].bm_minion){
+        fprintf(stderr, "Falha ao carregar imagem do minion.\n");
+      }
     }
-	}
 }
 
 void minion_colide(Minion minions[], Jogador jogs[]){

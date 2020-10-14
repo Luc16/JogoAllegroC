@@ -176,7 +176,7 @@ int inicio(ALLEGRO_DISPLAY *janela, ALLEGRO_AUDIO_STREAM *musica, ALLEGRO_EVENT_
                 else{
                     no_botao_musica = false;
                 }
-                                if (botao_colisao(evento.mouse.x, evento.mouse.y, LARGURA_TELA/4, 130, botao_controle) && tela == 2){
+                if (botao_colisao(evento.mouse.x, evento.mouse.y, LARGURA_TELA/4, 130, botao_controle) && tela == 2){
                     no_botao_controle = true;
                 }
                 else{
