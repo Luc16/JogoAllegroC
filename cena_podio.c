@@ -206,6 +206,8 @@ int podio(int pontuacao, ALLEGRO_DISPLAY *janela, ALLEGRO_EVENT_QUEUE *fila_even
           "%s: \n%d", top[3].nome, top[3].pontos); 
           al_draw_multiline_textf(fonte, al_map_rgb(255, 255, 255), LARGURA_TELA / 2 + 445, 470, 2000, 40, ALLEGRO_ALIGN_CENTRE,
           "%s: \n%d", top[4].nome, top[4].pontos); 
+          al_draw_textf(fonte, al_map_rgb(255, 255, 255), 10, 10, ALLEGRO_ALIGN_LEFT,
+          "Voce fez: %d pontos", pontuacao);
 
           // texto de voltar
           al_draw_textf(fonte, al_map_rgb(255, 255, 255), LARGURA_TELA / 2, ALTURA_TELA-80, ALLEGRO_ALIGN_CENTRE,
