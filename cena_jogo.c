@@ -1015,16 +1015,16 @@ int jogo(ALLEGRO_DISPLAY *janela, ALLEGRO_EVENT_QUEUE *fila_eventos, ALLEGRO_BIT
       jog_desenhar(jogadores, &i_desenho, &espera, &desenho_atual, pato_parado, pato_pulando, pato_andando);
       desenhar_plataformas(plataformas, plataformas_mortais, mov_tela);
 
-      // ganhar o jogo 
-      if (covid[4].morto && covid[5].morto && covid[6].morto && covid[7].morto && covid[8].morto && covid[9].morto){
-        al_draw_text(fonte, al_map_rgb(255, 0, 0), LARGURA_TELA/2, ALTURA_TELA/2-100, ALLEGRO_ALIGN_CENTRE, "VOCE VENCEU O JOGO");
-        pontuacao += 200000;
-        fim = true;
-      }
       // acabar o jogo
       if (fim){
         al_rest(4);
         sair = true;
+      }
+      // ganhar o jogo 
+      if (covid[4].morto && covid[5].morto && covid[6].morto && covid[7].morto && covid[8].morto && covid[9].morto){
+        al_draw_text(fonte, al_map_rgb(255, 0, 0), LARGURA_TELA/2, ALTURA_TELA/2-100, ALLEGRO_ALIGN_CENTRE, "VOCE VENCEU O JOGO");
+        *pontuacao += 10000;
+        fim = true;
       }
       // morte
       if (jogadores[0].morto && jogadores[1].morto){
