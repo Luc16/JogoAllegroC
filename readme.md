@@ -2,7 +2,7 @@
 
 This is a game developed for a C programing class, using the allegro library.
 In this game a duck and a ball have to move past the Corona viruses and people without masks
-to scape 2020.
+to escape 2020.
 
 You can move with the character, shout to change the maskless people's direction
 and collect and use alcohol gel to kill corona viruses.
