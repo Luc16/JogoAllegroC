@@ -178,8 +178,8 @@ int main(){
         var_inicio = inicio(janela, musica, fila_eventos, fonte2, fonte0, evento, &num_jogs);
         if (var_inicio != 2){
             var_jogo = jogo(janela, fila_eventos, fundo, fonte3, fonte4, evento, temporizador, num_jogs, &pontos);
-            if (var_jogo != 2)
-                var_podio = podio(pontos, janela, fila_eventos, fonte, evento, temporizador);
+//            if (var_jogo != 2)
+//                var_podio = podio(pontos, janela, fila_eventos, fonte, evento, temporizador);
         }
         if (var_inicio == 2 || var_jogo == 2 || var_podio == 2)
             sair = true;
